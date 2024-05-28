@@ -6,17 +6,135 @@
     <title>NeatTrader</title>
 </head>
 <body>
-    <form id="testForm">
-        <label for="message">Test message:</label>
-        <input type="text" id="message" name="message"><br><br>
+    <form id="neatForm">
+        <h2>NEAT Parameters</h2>
+        <label for="fitness_criterion">Fitness Criterion:</label>
+        <input type="text" id="fitness_criterion" name="fitness_criterion" value="max"><br><br>
+        <label for="fitness_threshold">Fitness Threshold:</label>
+        <input type="number" id="fitness_threshold" name="fitness_threshold" value="3.9" step="0.1"><br><br>
+        <label for="pop_size">Population Size:</label>
+        <input type="number" id="pop_size" name="pop_size" value="150"><br><br>
+        <label for="reset_on_extinction">Reset on Extinction:</label>
+        <input type="checkbox" id="reset_on_extinction" name="reset_on_extinction"><br><br>
+
+        <h2>Default Genome</h2>
+        <label for="activation_default">Activation Default:</label>
+        <input type="text" id="activation_default" name="activation_default" value="sigmoid"><br><br>
+        <label for="activation_mutate_rate">Activation Mutate Rate:</label>
+        <input type="number" id="activation_mutate_rate" name="activation_mutate_rate" value="0.0" step="0.01"><br><br>
+        <label for="activation_options">Activation Options:</label>
+        <input type="text" id="activation_options" name="activation_options" value="sigmoid"><br><br>
+
+        <label for="aggregation_default">Aggregation Default:</label>
+        <input type="text" id="aggregation_default" name="aggregation_default" value="sum"><br><br>
+        <label for="aggregation_mutate_rate">Aggregation Mutate Rate:</label>
+        <input type="number" id="aggregation_mutate_rate" name="aggregation_mutate_rate" value="0.0" step="0.01"><br><br>
+        <label for="aggregation_options">Aggregation Options:</label>
+        <input type="text" id="aggregation_options" name="aggregation_options" value="sum"><br><br>
+
+        <label for="bias_init_mean">Bias Init Mean:</label>
+        <input type="number" id="bias_init_mean" name="bias_init_mean" value="0.0" step="0.1"><br><br>
+        <label for="bias_init_stdev">Bias Init Stdev:</label>
+        <input type="number" id="bias_init_stdev" name="bias_init_stdev" value="1.0" step="0.1"><br><br>
+        <label for="bias_max_value">Bias Max Value:</label>
+        <input type="number" id="bias_max_value" name="bias_max_value" value="30.0" step="0.1"><br><br>
+        <label for="bias_min_value">Bias Min Value:</label>
+        <input type="number" id="bias_min_value" name="bias_min_value" value="-30.0" step="0.1"><br><br>
+        <label for="bias_mutate_power">Bias Mutate Power:</label>
+        <input type="number" id="bias_mutate_power" name="bias_mutate_power" value="0.5" step="0.1"><br><br>
+        <label for="bias_mutate_rate">Bias Mutate Rate:</label>
+        <input type="number" id="bias_mutate_rate" name="bias_mutate_rate" value="0.7" step="0.1"><br><br>
+        <label for="bias_replace_rate">Bias Replace Rate:</label>
+        <input type="number" id="bias_replace_rate" name="bias_replace_rate" value="0.1" step="0.1"><br><br>
+
+        <label for="compatibility_disjoint_coefficient">Compatibility Disjoint Coefficient:</label>
+        <input type="number" id="compatibility_disjoint_coefficient" name="compatibility_disjoint_coefficient" value="1.0" step="0.1"><br><br>
+        <label for="compatibility_weight_coefficient">Compatibility Weight Coefficient:</label>
+        <input type="number" id="compatibility_weight_coefficient" name="compatibility_weight_coefficient" value="0.5" step="0.1"><br><br>
+
+        <label for="conn_add_prob">Connection Add Probability:</label>
+        <input type="number" id="conn_add_prob" name="conn_add_prob" value="0.5" step="0.1"><br><br>
+        <label for="conn_delete_prob">Connection Delete Probability:</label>
+        <input type="number" id="conn_delete_prob" name="conn_delete_prob" value="0.5" step="0.1"><br><br>
+
+        <label for="enabled_default">Enabled Default:</label>
+        <input type="checkbox" id="enabled_default" name="enabled_default" checked><br><br>
+        <label for="enabled_mutate_rate">Enabled Mutate Rate:</label>
+        <input type="number" id="enabled_mutate_rate" name="enabled_mutate_rate" value="0.01" step="0.01"><br><br>
+
+        <label for="feed_forward">Feed Forward:</label>
+        <input type="checkbox" id="feed_forward" name="feed_forward" checked><br><br>
+        <label for="initial_connection">Initial Connection:</label>
+        <input type="text" id="initial_connection" name="initial_connection" value="full"><br><br>
+
+        <label for="node_add_prob">Node Add Probability:</label>
+        <input type="number" id="node_add_prob" name="node_add_prob" value="0.2" step="0.1"><br><br>
+        <label for="node_delete_prob">Node Delete Probability:</label>
+        <input type="number" id="node_delete_prob" name="node_delete_prob" value="0.2" step="0.1"><br><br>
+
+        <label for="num_hidden">Number of Hidden Nodes:</label>
+        <input type="number" id="num_hidden" name="num_hidden" value="0"><br><br>
+        <label for="num_inputs">Number of Input Nodes:</label>
+        <input type="number" id="num_inputs" name="num_inputs" value="2"><br><br>
+        <label for="num_outputs">Number of Output Nodes:</label>
+        <input type="number" id="num_outputs" name="num_outputs" value="1"><br><br>
+
+        <label for="response_init_mean">Response Init Mean:</label>
+        <input type="number" id="response_init_mean" name="response_init_mean" value="1.0" step="0.1"><br><br>
+        <label for="response_init_stdev">Response Init Stdev:</label>
+        <input type="number" id="response_init_stdev" name="response_init_stdev" value="0.0" step="0.1"><br><br>
+        <label for="response_max_value">Response Max Value:</label>
+        <input type="number" id="response_max_value" name="response_max_value" value="30.0" step="0.1"><br><br>
+        <label for="response_min_value">Response Min Value:</label>
+        <input type="number" id="response_min_value" name="response_min_value" value="-30.0" step="0.1"><br><br>
+        <label for="response_mutate_power">Response Mutate Power:</label>
+        <input type="number" id="response_mutate_power" name="response_mutate_power" value="0.0" step="0.1"><br><br>
+        <label for="response_mutate_rate">Response Mutate Rate:</label>
+        <input type="number" id="response_mutate_rate" name="response_mutate_rate" value="0.0" step="0.1"><br><br>
+        <label for="response_replace_rate">Response Replace Rate:</label>
+        <input type="number" id="response_replace_rate" name="response_replace_rate" value="0.0" step="0.1"><br><br>
+
+        <label for="weight_init_mean">Weight Init Mean:</label>
+        <input type="number" id="weight_init_mean" name="weight_init_mean" value="0.0" step="0.1"><br><br>
+        <label for="weight_init_stdev">Weight Init Stdev:</label>
+        <input type="number" id="weight_init_stdev" name="weight_init_stdev" value="1.0" step="0.1"><br><br>
+        <label for="weight_max_value">Weight Max Value:</label>
+        <input type="number" id="weight_max_value" name="weight_max_value" value="30" step="0.1"><br><br>
+        <label for="weight_min_value">Weight Min Value:</label>
+        <input type="number" id="weight_min_value" name="weight_min_value" value="-30" step="0.1"><br><br>
+        <label for="weight_mutate_power">Weight Mutate Power:</label>
+        <input type="number" id="weight_mutate_power" name="weight_mutate_power" value="0.5" step="0.1"><br><br>
+        <label for="weight_mutate_rate">Weight Mutate Rate:</label>
+        <input type="number" id="weight_mutate_rate" name="weight_mutate_rate" value="0.8" step="0.1"><br><br>
+        <label for="weight_replace_rate">Weight Replace Rate:</label>
+        <input type="number" id="weight_replace_rate" name="weight_replace_rate" value="0.1" step="0.1"><br><br>
+
+        <h2>Default Species Set</h2>
+        <label for="compatibility_threshold">Compatibility Threshold:</label>
+        <input type="number" id="compatibility_threshold" name="compatibility_threshold" value="3.0" step="0.1"><br><br>
+
+        <h2>Default Stagnation</h2>
+        <label for="species_fitness_func">Species Fitness Function:</label>
+        <input type="text" id="species_fitness_func" name="species_fitness_func" value="max"><br><br>
+        <label for="max_stagnation">Max Stagnation:</label>
+        <input type="number" id="max_stagnation" name="max_stagnation" value="20"><br><br>
+        <label for="species_elitism">Species Elitism:</label>
+        <input type="number" id="species_elitism" name="species_elitism" value="2"><br><br>
+
+        <h2>Default Reproduction</h2>
+        <label for="elitism">Elitism:</label>
+        <input type="number" id="elitism" name="elitism" value="2"><br><br>
+        <label for="survival_threshold">Survival Threshold:</label>
+        <input type="number" id="survival_threshold" name="survival_threshold" value="0.2" step="0.1"><br><br>
+
         <button type="submit">Submit</button>
     </form>
 
     <div id="output"></div>
 
     <script>
-        // Test server communication
-        document.getElementById("testForm").addEventListener("submit", function(event) {
+        // Send config to server
+        document.getElementById("neatForm").addEventListener("submit", function(event) {
             event.preventDefault();
             var formData = new FormData(this);
             fetch("/process", {

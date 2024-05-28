@@ -88,5 +88,4 @@ def process_parameters(params):
     with open(file_path, 'w') as configfile:
         config.write(configfile)
     
-    return {'message': 'config.ini created successfully',
-            'file_path': file_path}
+    return file_path

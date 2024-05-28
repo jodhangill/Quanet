@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from algorithm import config_parser
+from algorithm import neat_algo
 
 app = Flask(__name__)
 
@@ -18,9 +18,9 @@ def process():
     data['feed_forward'] = data.get('feed_forward') == 'on'
     
     # Create config file and get the filename and message
-    result =  config_parser.process_parameters(data)
+    result =  neat_algo.run(data)
     
-    return jsonify(result)
+    return jsonify({'message': result})
 
 if __name__ == '__main__':
     app.run(debug=True)

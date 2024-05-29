@@ -137,7 +137,7 @@
         document.getElementById("neatForm").addEventListener("submit", function(event) {
             event.preventDefault();
             var formData = new FormData(this);
-            fetch("/process", {
+            fetch("/process-form", {
                 method: "POST",
                 body: formData
             })

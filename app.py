@@ -8,8 +8,8 @@ def index():
     return render_template('index.html')
 
 # Handle incoming message
-@app.route('/process', methods=['POST'])
-def process():
+@app.route('/process-form', methods=['POST'])
+def process_form():
     data = request.form.to_dict()
     
     # Parse boolean values correctly

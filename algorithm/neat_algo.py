@@ -1,16 +1,33 @@
 import neat
-from . import config_parser
+import backtrader as bt
+import yfinance as yf
+from . import config_parser, NeatStrategy
 
-xor_inputs = [(0.0, 0.0), (0.0, 1.0), (1.0, 0.0), (1.0, 1.0)]
-xor_outputs = [(0.0,), (1.0,), (1.0,), (0.0,)]
+# Download data example (TODO: Choose data from client-side)
+data = yf.download('SPY', '2007-08-01', '2008-07-01')
 
 def eval_genomes(genomes, config):
     for genome_id, genome in genomes:
-        genome.fitness = 4.0
+        cerebro = bt.Cerebro()
+
+        # Create neural network
         net = neat.nn.FeedForwardNetwork.create(genome, config)
-        for xi, xo in zip(xor_inputs, xor_outputs):
-            output = net.activate(xi)
-            genome.fitness -= (output[0] - xo[0]) ** 2
+
+        # Pass the network as an argument to the strategy
+        cerebro.addstrategy(NeatStrategy.NeatStrategy, neat_net=net)
+
+        data_feed = bt.feeds.PandasData(dataname=data)
+        cerebro.adddata(data_feed)
+
+        # Add analyzer for testing base metric (TODO: Choose analyzers/"fitness function" from client-side)
+        cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name="sharpe")
+
+        cerebro.broker.setcash(100000.0)
+        strategies = cerebro.run()
+        strategy = strategies[0]
+
+        sharpe_ratio = strategy.analyzers.sharpe.get_analysis()['sharperatio']
+        genome.fitness = sharpe_ratio if sharpe_ratio else float('-INF')
 
 def run(data):
     config_file = config_parser.process_parameters(data)
@@ -34,15 +51,5 @@ def run(data):
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
 
-    # Show output of the most fit genome against training data.
-    outputs = []
-    print('\nOutput:')
-    winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
-    for xi, xo in zip(xor_inputs, xor_outputs):
-        output = winner_net.activate(xi)
-        output_str = "input {!r}, expected output {!r}, got {!r}".format(xi, xo, output)
-        outputs.append(output_str)
-        print(output_str)
-
-    return '\n'.join(outputs)
+    return 'success'
 

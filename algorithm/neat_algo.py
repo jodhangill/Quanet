@@ -45,11 +45,16 @@ def run(data):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    # Run for up to 300 generations.
-    winner = p.run(eval_genomes, 300)
-
+    # Run for up to 10 generations.
+    max_generations = 10
+    for generation in range(max_generations):
+        try:
+            winner = p.run(eval_genomes, n=1)
+            generation += 1
+        except neat.population.CompleteExtinctionException:
+            break
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
 
-    return 'success'
+    return format(winner)
 

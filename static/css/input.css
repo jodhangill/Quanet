@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom cursor */
+.custom-cursor {
+    cursor: url('../images/custom-cursor.png'), auto;
+}

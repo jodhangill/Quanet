@@ -4,8 +4,8 @@ from algorithm import neat_algo
 app = Flask(__name__)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return render_template('home.html')
 
 # Handle incoming message
 @app.route('/process-form', methods=['POST'])

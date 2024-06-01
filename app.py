@@ -7,6 +7,10 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
+@app.route('/configurator')
+def configurator():
+    return render_template('configurator.html')
+
 # Handle incoming message
 @app.route('/process-form', methods=['POST'])
 def process_form():

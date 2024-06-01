@@ -1,0 +1,610 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="flex flex-col items-center justify-center min-h-screen">
+    <form id="neatForm" class="bg-gray-950 shadow-md rounded px-8 pt-6 pb-8 m-20 form-container w-screen max-w-2xl">
+        <h2 class="text-2xl mb-8">Configurator</h2>
+
+        <h2 class="text-xl mt-4 mb-4">NEAT Parameters</h2>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="fitness_criterion">Fitness
+                    Criterion:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="text" id="fitness_criterion" name="fitness_criterion" value="max">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="fitness_threshold">Fitness
+                    Threshold:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="fitness_threshold" name="fitness_threshold" value="3.9" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="pop_size">Population Size:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="pop_size" name="pop_size" value="150">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="reset_on_extinction">Reset on
+                    Extinction:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input class="custom-input" type="checkbox" id="reset_on_extinction" name="reset_on_extinction">
+            </div>
+        </div>
+
+        <h2 class="text-xl mt-4 mb-4">Default Genome</h2>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="activation_default">Activation
+                    Default:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="text" id="activation_default" name="activation_default" value="sigmoid">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="activation_mutate_rate">Activation Mutate
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="activation_mutate_rate" name="activation_mutate_rate" value="0.0" step="0.01">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="activation_options">Activation
+                    Options:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="text" id="activation_options" name="activation_options" value="sigmoid">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="aggregation_default">Aggregation
+                    Default:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="text" id="aggregation_default" name="aggregation_default" value="sum">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="aggregation_mutate_rate">Aggregation
+                    Mutate Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="aggregation_mutate_rate" name="aggregation_mutate_rate" value="0.0" step="0.01">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="aggregation_options">Aggregation
+                    Options:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="text" id="aggregation_options" name="aggregation_options" value="sum">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_init_mean">Bias Init Mean:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_init_mean" name="bias_init_mean" value="0.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_init_stdev">Bias Init Stdev:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_init_stdev" name="bias_init_stdev" value="1.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_max_value">Bias Max Value:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_max_value" name="bias_max_value" value="30.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_min_value">Bias Min Value:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_min_value" name="bias_min_value" value="-30.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_mutate_power">Bias Mutate
+                    Power:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_mutate_power" name="bias_mutate_power" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_mutate_rate">Bias Mutate
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_mutate_rate" name="bias_mutate_rate" value="0.7" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="bias_replace_rate">Bias Replace
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="bias_replace_rate" name="bias_replace_rate" value="0.1" step="0.1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2"
+                    for="compatibility_disjoint_coefficient">Compatibility Disjoint Coefficient:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="compatibility_disjoint_coefficient" name="compatibility_disjoint_coefficient"
+                    value="1.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2"
+                    for="compatibility_weight_coefficient">Compatibility Weight Coefficient:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="compatibility_weight_coefficient" name="compatibility_weight_coefficient"
+                    value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="conn_add_prob">Connection Add
+                    Probability:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="conn_add_prob" name="conn_add_prob" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="conn_delete_prob">Connection Delete
+                    Probability:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="conn_delete_prob" name="conn_delete_prob" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="enabled_default">Enabled Default:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input class="custom-input" type="checkbox" id="enabled_default" name="enabled_default" checked>
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="enabled_mutate_rate">Enabled Mutate
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="enabled_mutate_rate" name="enabled_mutate_rate" value="0.01" step="0.01">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="feed_forward">Feed Forward:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input class="custom-input" type="checkbox" id="feed_forward" name="feed_forward" checked>
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="initial_connection">Initial
+                    Connection:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="text" id="initial_connection" name="initial_connection" value="full_nodirect">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="node_add_prob">Node Add
+                    Probability:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="node_add_prob" name="node_add_prob" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="node_delete_prob">Node Delete
+                    Probability:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="node_delete_prob" name="node_delete_prob" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="num_hidden">Number of Hidden
+                    Nodes:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="num_hidden" name="num_hidden" value="0">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="num_inputs">Number of Input Nodes:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="num_inputs" name="num_inputs" value="2">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="num_outputs">Number of Output
+                    Nodes:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="num_outputs" name="num_outputs" value="1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_init_mean">Response Init
+                    Mean:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_init_mean" name="response_init_mean" value="1.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_init_stdev">Response Init
+                    Stdev:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_init_stdev" name="response_init_stdev" value="0.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_max_value">Response Max
+                    Value:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_max_value" name="response_max_value" value="30.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_min_value">Response Min
+                    Value:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_min_value" name="response_min_value" value="-30.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_mutate_power">Response Mutate
+                    Power:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_mutate_power" name="response_mutate_power" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_mutate_rate">Response Mutate
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_mutate_rate" name="response_mutate_rate" value="0.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="response_replace_rate">Response Replace
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="response_replace_rate" name="response_replace_rate" value="0.1" step="0.1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_init_mean">Weight Init
+                    Mean:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_init_mean" name="weight_init_mean" value="0.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_init_stdev">Weight Init
+                    Stdev:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_init_stdev" name="weight_init_stdev" value="1.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_max_value">Weight Max
+                    Value:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_max_value" name="weight_max_value" value="30.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_min_value">Weight Min
+                    Value:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_min_value" name="weight_min_value" value="-30.0" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_mutate_power">Weight Mutate
+                    Power:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_mutate_power" name="weight_mutate_power" value="0.5" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_mutate_rate">Weight Mutate
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_mutate_rate" name="weight_mutate_rate" value="0.8" step="0.1">
+            </div>
+        </div>
+
+        <div class="mb-4 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block text-white text-base font-bold mb-2" for="weight_replace_rate">Weight Replace
+                    Rate:</label>
+            </div>
+            <div class="md:w-2/3">
+
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline custom-input"
+                    type="number" id="weight_replace_rate" name="weight_replace_rate" value="0.1" step="0.1">
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button">Start</button>
+        </div>
+    </form>
+</div>
+<div id="output"></div>
+
+<script>
+    // Send config to server
+    document.getElementById("neatForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        fetch("/process-form", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("output").innerText = "Response: " + data.message;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}

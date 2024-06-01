@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 /* Custom cursor */
-.custom-cursor {
+* {
     cursor: url('../images/custom-cursor.png'), auto;
+}
+
+#neatForm input {
+    background-color: #111827;
+    border-color: white;
+}
+
+#neatForm * {
+    animation: fadeInUp;
+    animation-duration: 1s;
 }

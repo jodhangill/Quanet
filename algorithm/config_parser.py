@@ -44,7 +44,7 @@ def process_parameters(params):
         'node_add_prob': params.get('node_add_prob', '0.2'),
         'node_delete_prob': params.get('node_delete_prob', '0.2'),
         'num_hidden': params.get('num_hidden', '0'),
-        'num_inputs': params.get('num_inputs', '2'),
+        'num_inputs': params.get('num_inputs', '5'),
         'num_outputs': params.get('num_outputs', '1'),
         'response_init_mean': params.get('response_init_mean', '1.0'),
         'response_init_stdev': params.get('response_init_stdev', '0.0'),

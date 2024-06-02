@@ -7,10 +7,22 @@
     cursor: url('../images/custom-cursor.png'), auto;
 }
 
-#neatForm input {
-    background-color: #111827;
-    border-color: white;
+#neatForm {
+    @apply bg-gray-950 shadow-md rounded px-8 pt-6 pb-8 mt-20 mb-20 w-screen max-w-2xl;
 }
+
+#neatForm .input-container {
+    @apply block mb-4 md:flex md:items-center;
+}
+
+#neatForm .input-container label {
+    @apply block text-white text-base font-bold mb-2;
+}
+
+#neatForm .input-container input:not([type="checkbox"]) {
+    @apply shadow bg-gray-900 appearance-none border-white border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none;
+}
+
 
 #neatForm * {
     animation: fadeInUp;

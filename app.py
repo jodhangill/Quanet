@@ -25,7 +25,7 @@ def process_form():
     data['enabled_default'] = data.get('enabled_default') == 'on'
     data['feed_forward'] = data.get('feed_forward') == 'on'
     
-    # Create config file and get the filename and message
+    # Run algorithm from form config data
     result =  neat_algo.run(data)
     
     return jsonify({'message': result})

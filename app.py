@@ -7,6 +7,10 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
+@app.route('/fitness')
+def fitness():
+    return render_template('fitness-calculator.html')
+
 @app.route('/configurator')
 def configurator():
     return render_template('configurator.html')

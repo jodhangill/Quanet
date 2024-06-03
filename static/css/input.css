@@ -4,7 +4,11 @@
 
 /* Custom cursor */
 * {
-    cursor: url('../images/custom-cursor.png'), auto;
+    cursor: url('../images/custom-cursor.png'), auto !important;
+}
+
+button, a {
+    @apply bg-transparent shadow-lg hover:bg-indigo-100 text-white font-semibold hover:text-black py-2 px-4 border border-white hover:border-transparent rounded;
 }
 
 #neatForm {
@@ -24,7 +28,8 @@
 }
 
 
+
 #neatForm * {
     animation: fadeInUp;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
 }

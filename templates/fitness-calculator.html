@@ -5,7 +5,8 @@
 <div id="calculator" class="absolute bottom-0  w-full overflow-y-hidden">
     <div id="displayContainer" class="content-center p-4">
         <div id="display" class="animate__animated animate__fadeInDown animate__faster bg-gray-900 border border-white p-5 rounded-lg shadow-lg h-full">
-            <span id="output">Display</span>
+            <span id="output" class="break-words max-w-full"></span>
+            <div id="caret" class="absolute animate__animated animate__flash forever w-px h-5 bg-white"></div>
         </div>        
     </div>
     <div id="calcPad" class="animate__animated animate__fadeInUp animate__faster rounded-t-xl bg-gray-950 md:grid md:grid-cols-3">
@@ -29,17 +30,18 @@
             </div>
             <div id="operators" class="mx-2 col-span-1 grid grid-cols-3">
                 <button class="px-0 m-1">+</button>
+                <button class="px-0 m-1">^</button>
+                <button id="backspace" class="px-0 m-1 border-red-700">←</button>
+                <button class="px-0 m-1">-</button>
+                <button class="px-0 m-1">log</button>
+                <button id="clear" class="px-0 m-1 border-purple-400">Clear</button>
+                <button class="px-0 m-1">*</button>
                 <button class="px-0 m-1">(</button>
                 <button class="px-0 m-1">)</button>
-                <button class="px-0 m-1">-</button>
-                <button class="px-0 m-1">^</button>
-                <button class="px-0 m-1">log</button>
-                <button class="px-0 m-1">*</button>
-                <button class="px-0 m-1"> </button>
-                <button class="px-0 m-1"> </button>
                 <button class="px-0 m-1">/</button>
-                <button class="px-0 m-1"> </button>
-                <button onclick="location.href='/configurator'" class="px-0 m-1"> Done </button>
+                <button class="px-0 m-1"></button>
+                <button id="done" class="px-0 m-1 border-teal-300"> Done </button>
+
             </div>
         </div>        
     </div>

@@ -22,6 +22,8 @@ function handleClick(event) {
     // Track the current function text
     if (id == 'backspace') {
         fitnessFunc = fitnessFunc.substring(0, fitnessFunc.length - 1);
+        textWidths.pop()
+        textWidths.pop()
         caretIndex--;
     }
     else if (id == 'clear') {

@@ -1,5 +1,7 @@
 let fitnessFunc = "";
 let textWidths = [];
+let outputCount = 0;
+let caretIndex = -1;
 
 
 function setDisplaySize() {
@@ -12,31 +14,39 @@ function setDisplaySize() {
 }
 
 function handleClick(event) {
+
     const id = event.target.id
+
+    const caret = document.getElementById('caret');
 
     // Track the current function text
     if (id == 'backspace') {
         fitnessFunc = fitnessFunc.substring(0, fitnessFunc.length - 1);
+        caretIndex--;
     }
     else if (id == 'clear') {
         fitnessFunc = "";
+        textWidths = [];
+        outputCount = 0;
+        caretIndex = 0;
     }
     else if (id == 'done') {
         window.location.href = '/configurator';
     }
     else {
+        caretIndex++;
         fitnessFunc += event.target.innerText;
     }
-
+    
     // Display fitness function
     const output = document.getElementById('output');
     output.innerText = fitnessFunc;
 
     // Adjust caret position
     const outputFrame = output.getBoundingClientRect();
-    const caret = document.getElementById('caret');
+    textWidths.push(outputFrame.right)
     caret.style.top = outputFrame.top - 90 + 'px';
-    caret.style.left = outputFrame.right - 16 + 'px';
+    caret.style.left = textWidths.at(caretIndex) - 16 + 'px';
 }
 
 function setClickHandlers() {

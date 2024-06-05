@@ -1,7 +1,6 @@
-let fitnessFunc = "";
-let textWidths = [];
-let outputCount = 0;
-let caretIndex = -1;
+let outputDisplayData = [["", null]]; // [text:string, width:float]
+let caretIndex = 0;
+let lastWidth = 0;
 
 
 function setDisplaySize() {
@@ -13,42 +12,112 @@ function setDisplaySize() {
     displayContainer.style.height = `${window.innerHeight - calcPad.offsetHeight - homeButton.offsetHeight - 36}px`;
 }
 
-function handleClick(event) {
+function updateWidths(textWidths, i) {
+    let widthToRemove = textWidths[i];
+    while (i < textWidths.length - 1) {
+        textWidths[i] = textWidths[i + 1] - widthToRemove;
+        i++;
+    }
+    textWidths.pop();
+}
 
+function getCaretX(caretInd) {
+    let xPos = 0;
+    for (let i = 0; i < caretInd + 1; i++) {
+        xPos += outputDisplayData[i][1]
+    }
+    return xPos;
+}
+
+function updateOutputText() {
+    let outputStr = "";
+    for (let i = 0; i < outputDisplayData.length; i++) {
+        outputStr = outputStr + outputDisplayData[i][0];
+    }
+    // Update display output element
+    let output = document.getElementById('output');
+    output.innerText = outputStr;
+}
+
+function backspace() {
+    if (caretIndex > 0) {
+        outputDisplayData.splice(caretIndex, 1);
+        updateOutputText();
+        caretIndex--;
+        let output = document.getElementById('output');
+        let outputFrame = output.getBoundingClientRect();
+        lastWidth = outputFrame.right;        
+    }
+}
+
+function moveLeft() {
+    if (caretIndex > 0) {
+        caretIndex--;
+    }
+}
+
+function moveRight() {
+    if (caretIndex < outputDisplayData.length - 1) {
+        caretIndex++;
+    }
+}
+
+function clear() {
+    outputStr = "";
+    lastWidth = outputDisplayData[0][1];
+    outputDisplayData = [["", lastWidth]];
+    caretIndex = 0;
+    // Update display output element
+    let output = document.getElementById('output');
+    output.innerText = outputStr;
+}
+
+function addText(text) {
+    // Update display text data
+    caretIndex++;
+    let data = [text, null]
+    outputDisplayData.splice(caretIndex, 0, data);
+
+    updateOutputText()
+
+    // Update display width data
+    let output = document.getElementById('output');
+    let outputFrame = output.getBoundingClientRect();
+    outputDisplayData[caretIndex][1] = outputFrame.right - lastWidth;
+    lastWidth = outputFrame.right;
+}
+
+function handleClick(event) {
     const id = event.target.id
 
     const caret = document.getElementById('caret');
 
     // Track the current function text
     if (id == 'backspace') {
-        fitnessFunc = fitnessFunc.substring(0, fitnessFunc.length - 1);
-        textWidths.pop()
-        textWidths.pop()
-        caretIndex--;
+        backspace();
+    }
+    else if (id == 'left') {
+        moveLeft();
+    }
+    else if (id == 'right') {
+        moveRight();
     }
     else if (id == 'clear') {
-        fitnessFunc = "";
-        textWidths = [];
-        outputCount = 0;
-        caretIndex = 0;
+        clear();
     }
     else if (id == 'done') {
         window.location.href = '/configurator';
     }
     else {
-        caretIndex++;
-        fitnessFunc += event.target.innerText;
+        addText(event.target.innerText);
     }
-    
-    // Display fitness function
-    const output = document.getElementById('output');
-    output.innerText = fitnessFunc;
 
     // Adjust caret position
     const outputFrame = output.getBoundingClientRect();
-    textWidths.push(outputFrame.right)
-    caret.style.top = outputFrame.top - 90 + 'px';
-    caret.style.left = textWidths.at(caretIndex) - 16 + 'px';
+    if (caretIndex != 0) {
+        caret.style.top = outputFrame.top - 90 + 'px';
+    }
+    caret.style.left = getCaretX(caretIndex) - 16 + 'px';
 }
 
 function setClickHandlers() {
@@ -65,6 +134,9 @@ function setClickHandlers() {
 window.onload = function () {
     setDisplaySize();
     setClickHandlers();
+    const output = document.getElementById('output');
+    const outputFrame = output.getBoundingClientRect();
+    outputDisplayData[0][1] = lastWidth = outputFrame.right;
 };
 window.addEventListener('resize', function(event) {
     setDisplaySize();

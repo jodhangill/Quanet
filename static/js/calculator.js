@@ -1,3 +1,4 @@
+//TODO line breaks
 let outputDisplayData = [["", null]]; // [text:string, width:float]
 let caretIndex = 0;
 let lastWidth = 0;
@@ -36,7 +37,7 @@ function updateOutputText() {
     }
     // Update display output element
     let output = document.getElementById('output');
-    output.innerText = outputStr;
+    output.innerHTML = outputStr;
 }
 
 function backspace() {
@@ -69,7 +70,7 @@ function clear() {
     caretIndex = 0;
     // Update display output element
     let output = document.getElementById('output');
-    output.innerText = outputStr;
+    output.innerHTML = outputStr;
 }
 
 function addText(text) {
@@ -108,6 +109,14 @@ function handleClick(event) {
     else if (id == 'done') {
         window.location.href = '/configurator';
     }
+    else if (event.target.classList.contains('metric')) {
+        const computedStyle = window.getComputedStyle(event.target);
+        const color = computedStyle.color;
+        
+        console.log(color)
+        const element = `<span style="color: ${color};">[${event.target.innerText}]</span>`
+        addText(element);
+    }
     else {
         addText(event.target.innerText);
     }
@@ -121,7 +130,7 @@ function handleClick(event) {
 }
 
 function setClickHandlers() {
-    const buttonContainer = document.getElementById('keyboard');
+    const buttonContainer = document.getElementById('calcPad');
 
     // Get all calculator buttons
     const buttons = buttonContainer.getElementsByTagName('button');

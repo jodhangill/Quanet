@@ -2,21 +2,25 @@
 
 {% block content %}
 <script src="{{ url_for('static', filename='js/calculator.js') }}"></script>
-<div id="calculator" class="absolute bottom-0  w-full overflow-y-hidden">
+<div id="calculator" class="absolute bottom-0 w-full overflow-y-hidden">
     <div id="displayContainer" class="content-center p-4">
-        <div id="display" class="animate__animated animate__fadeInDown animate__faster flex whitespace-nowrap bg-gray-900 border border-white p-5 rounded-lg h-full shadow-lg">
-            <span id="output"></span>
-            <div id="caret" class="absolute animate__animated animate__flash forever w-px h-5 bg-white"></div>
-        </div>        
+        <div id="display" onblur="this.focus()" autofocus
+            class="animate__animated animate__fadeInDown animate__faster overflow-auto block p-2 w-full h-full md:text-2xl text-lg rounded-lg border border-white bg-gray-700  text-white">
+        </div>
+        <div id="caret" class="absolute animate__animated animate__flash forever w-px md:h-7 h-5 bg-white"></div>
+
     </div>
-    <div id="calcPad" class="animate__animated animate__fadeInUp animate__faster rounded-t-xl bg-gray-950 md:grid md:grid-cols-3">
+    <div id="calcPad"
+        class="animate__animated animate__fadeInUp animate__faster rounded-t-xl bg-gray-950 md:grid md:grid-cols-3">
         <div id="metrics" class="md:col-span-1 p-2">
             <h2 class="text-xl p-2">Metrics</h2>
             <div class="flex overflow-x-auto whitespace-nowrap md:block md:whitespace-normal">
-                <button class="metric h-10 m-1  border-teal-200" style="color: rgb(173, 227, 216);">sharpe ratio</button>
-                <button class="metric h-10 m-1 border-red-200" style="color: rgb(255, 215, 215);">max drawdown</button>
-                <button class="metric h-10 m-1 border-yellow-200" style="color: rgb(255, 248, 174);">total compound returns</button>
-                <button class="metric h-10 m-1 border-sky-200" style="color: rgb(181, 225, 255);">SQN</button>
+                <button class="metric h-10 m-1  border-teal-200" style="color: rgb(144, 255, 233);">SHARPE
+                    RATIO</button>
+                <button class="metric h-10 m-1 border-red-200" style="color: rgb(255, 147, 147);">MAX DRAWDOWN</button>
+                <button class="metric h-10 m-1 border-yellow-200" style="color: rgb(255, 246, 144);">TOTAL COMPOUND
+                    RETURNS</button>
+                <button class="metric h-10 m-1 border-sky-200" style="color: rgb(146, 212, 255);">SQN</button>
             </div>
         </div>
         <div id="keyboard" class="col-span-2 grid grid-cols-2 p-3">
@@ -51,8 +55,7 @@
                 <button id="right" class="px-0 m-1">►</button>
 
             </div>
-        </div>        
+        </div>
     </div>
-
-</div>    
+</div>
 {% endblock %}

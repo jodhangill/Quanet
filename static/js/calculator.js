@@ -1,4 +1,6 @@
 let lastFocusOffset = 0;
+let node = 0;
+let displayCount = 0;
 
 function setDisplaySize() {
     // Set the height of the calculator display based on other elements
@@ -16,64 +18,56 @@ function setCaretToDefault() {
     caret.style.left = '26px';
 }
 
-function updateWidths(textWidths, index) {
-    // Update the widths of the text elements
-    let widthToRemove = textWidths[index];
-    while (index < textWidths.length - 1) {
-        textWidths[index] = textWidths[index + 1] - widthToRemove;
-        index++;
-    }
-    textWidths.pop();
-}
-
-function getCaretX(caretIndex) {
-    // Calculate the x-position of the caret
-    let xPos = 0;
-    for (let i = 0; i <= caretIndex; i++) {
-        xPos += outputDisplayData[i][1];
-    }
-    return xPos;
-}
-
-function updateOutputText() {
-    // Update the output text display
-    let outputStr = outputDisplayData.map(data => data[0]).join('');
-    const output = document.getElementById('output');
-    output.innerHTML += outputStr;
-}
-
 function backspace() {
     // Simulate backspace key press
-    document.execCommand("delete", false, null);
-}
+    const display = document.getElementById('display');
+    if (window.getSelection && display.childNodes.length !== 0) {
+        const selection = window.getSelection();
+        let startPos = Math.min(selection.anchorOffset, selection.focusOffset);
+        let afterText = display.childNodes[node].textContent.substring(startPos);
 
-function moveLeft() {
-    // Move the caret left
-    if (caretIndex > 0) {
-        caretIndex--;
-    }
-}
+        if (display.childNodes[node].textContent[startPos - 1] === "‎") {
+            display.removeChild(display.childNodes[node].previousSibling);
+            display.removeChild(display.childNodes[node - 1]);
+            document.execCommand("delete", false, null);
+            node -= 2;
 
-function moveRight() {
-    // Move the caret right
-    if (caretIndex < outputDisplayData.length - 1) {
-        caretIndex++;
+            if (afterText.length !== 0) {
+                addText(afterText);
+                moveCaret(-afterText.length);
+            }
+        } else {
+            document.execCommand("delete", false, null);
+        }
+        displayCount--;
     }
 }
 
 function clearDisplay() {
     // Clear the entire display
-    const display = document.getElementById("display");
-    const size = display.innerHTML.length;
-    for (let i = 0; i < size; i++) {
-        document.execCommand("delete", false, null);
+    for (let i = 0; i < displayCount; i++) {
+        moveCaretRight();
+    }
+    let total = displayCount;
+    for (let i = 0; i < total; i++) {
+        backspace();
     }
 }
 
-function addText(text) {
+function addText(text, isSpan = false, isStyled = false, color = '', size = '') {
     // Add text to the display at the current caret position
     const display = document.getElementById('display');
-    let selection, range;
+    let selection;
+    const length = text.length;
+    let span;
+
+    if (isSpan) {
+        span = document.createElement('span');
+        span.textContent = text;
+        if (isStyled) {
+            span.style.cssText = `color: ${color}; font-size: ${parseInt(size, 10) * 3 / 4}px; border: 1px solid ${color}; border-radius: 4px; padding: 0 2px; margin: 0 4px; position: relative; top: ${(parseInt(size, 10) - 24) / 3}px;`;
+        }
+    }
 
     if (window.getSelection) {
         // Modern browsers
@@ -81,15 +75,30 @@ function addText(text) {
         selection = window.getSelection();
         let startPos = Math.min(selection.anchorOffset, selection.focusOffset);
         let endPos = Math.max(selection.anchorOffset, selection.focusOffset);
-        display.innerText = display.innerText.substring(0, startPos) + text + display.innerText.substring(endPos);
-        selection.collapse(display.firstChild, startPos + text.length);
-    } else if (selection = document.selection) {
-        // IE <= 8
-        if (selection.type !== "Control") {
-            range = selection.createRange();
-            range.move("character", text.length);
-            range.select();
+
+        if (isSpan && display.childNodes.length === 0) {
+            display.appendChild(document.createTextNode("‎"));
+            display.appendChild(span);
+            display.appendChild(document.createTextNode("‎"));
+            node += 2;
+            selection.collapse(display.childNodes[node], 1);
+        } else if (isSpan) {
+            let beforeText = display.childNodes[node].textContent.substring(0, startPos);
+            let afterText = display.childNodes[node].textContent.substring(endPos);
+            display.childNodes[node].textContent = beforeText + "‎";
+            display.insertBefore(span, display.childNodes[node].nextSibling);
+            display.insertBefore(document.createTextNode("‎"), span.nextSibling);
+            span.nextSibling.textContent += afterText;
+            node += 2;
+            selection.collapse(display.childNodes[node], 1);
+        } else if (display.childNodes.length === 0 || display.firstChild.tagName === 'SPAN') {
+            display.insertBefore(document.createTextNode(text), display.firstChild);
+            selection.collapse(display.firstChild, length);
+        } else {
+            display.childNodes[node].textContent = display.childNodes[node].textContent.substring(0, startPos) + text + display.childNodes[node].textContent.substring(endPos);
+            selection.collapse(display.childNodes.item(node), startPos + length);
         }
+        displayCount++;
     }
 }
 
@@ -102,55 +111,94 @@ function isMobileDevice() {
     return check;
 }
 
+function moveCaretLeft() {
+    // Move the caret to the left
+    const display = document.getElementById('display');
+    let selection;
+    if (window.getSelection && displayCount > 0) {
+        selection = window.getSelection();
+        if (display.childNodes[node].textContent[selection.focusOffset - 1] === "‎") {
+            // Move past span element
+            node -= 2;
+            selection.collapse(display.childNodes[node], display.childNodes[node].textContent.length - 1);
+        } else if (node !== 0 || selection.focusOffset !== 0) {
+            selection.collapse(display.childNodes[node], selection.focusOffset - 1);
+        }
+    }
+}
+
+function moveCaretRight() {
+    // Move the caret to the right
+    const display = document.getElementById('display');
+    let selection;
+    if (window.getSelection && displayCount > 0) {
+        selection = window.getSelection();
+        if (display.childNodes[node].textContent[selection.focusOffset] === "‎") {
+            // Move past span element
+            node += 2;
+            selection.collapse(display.childNodes[node], 1);
+        } else if (node !== display.childNodes.length - 1 || selection.focusOffset !== display.childNodes[node].length) {
+            selection.collapse(display.childNodes[node], selection.focusOffset + 1);
+        }
+    }
+}
+
 function moveCaret(charCount) {
     // Move the caret by a specified number of characters
-    let selection, range;
+    let selection;
     if (window.getSelection) {
         selection = window.getSelection();
         if (selection.rangeCount > 0) {
             let textNode = selection.focusNode;
             let newOffset = Math.min(textNode.length, selection.focusOffset + charCount);
-            if (newOffset < 0) {
-                newOffset = 0;
-            }
+            if (newOffset < 0) newOffset = 0;
             selection.collapse(textNode, newOffset);
-        }
-    } else if (selection = document.selection) {
-        if (selection.type !== "Control") {
-            range = selection.createRange();
-            range.move("character", charCount);
-            range.select();
         }
     }
 }
 
 function setCaretPosition(caretPos) {
     // Set the caret to a specific position
-    let difference = caretPos - window.getSelection().focusOffset;
-    moveCaret(difference);
+    const display = document.getElementById('display');
+    const selection = window.getSelection();
+    selection.collapse(display.childNodes[node], caretPos);
 }
 
 function handleClick(event) {
     // Handle button clicks
     const display = document.getElementById('display');
+    const size = window.getComputedStyle(display).getPropertyValue('font-size');
     display.contentEditable = true;
     display.focus();
     setCaretPosition(lastFocusOffset);
 
     const id = event.target.id;
 
-    if (id === 'backspace') {
-        backspace();
-    } else if (id === 'left') {
-        moveCaret(-1);
-    } else if (id === 'right') {
-        moveCaret(1);
-    } else if (id === 'clear') {
-        clearDisplay();
-    } else if (id === 'done') {
-        window.location.href = '/configurator';
-    } else {
-        addText(event.target.innerText);
+    switch (id) {
+        case 'backspace':
+            backspace();
+            break;
+        case 'left':
+            moveCaretLeft();
+            break;
+        case 'right':
+            moveCaretRight();
+            break;
+        case 'clear':
+            clearDisplay();
+            break;
+        case 'done':
+            window.location.href = '/configurator';
+            break;
+        default:
+            if (event.target.classList.contains('metric')) {
+                const color = window.getComputedStyle(event.target).getPropertyValue('color');
+                addText(event.target.innerText, true, true, color, size);
+            } else if (event.target.innerText.length > 1) {
+                addText(event.target.innerText, true, false);
+            } else {
+                addText(event.target.innerText, false);
+            }
     }
 
     // Update caret position
@@ -158,12 +206,11 @@ function handleClick(event) {
     const range = window.getSelection().getRangeAt(0).getClientRects()[0];
     if (range) {
         caret.style.left = `${range.right}px`;
-        caret.style.top = `${range.top - 72}px`;
+        caret.style.top = `${range.top - 92 + parseInt(size, 10)}px`;
     } else {
         setCaretToDefault();
     }
     lastFocusOffset = window.getSelection().focusOffset;
-
     display.contentEditable = false;
 }
 

@@ -98,6 +98,11 @@ function addText(text, isSpan = false, isStyled = false, color = '', size = '') 
             display.childNodes[node].textContent = display.childNodes[node].textContent.substring(0, startPos) + text + display.childNodes[node].textContent.substring(endPos);
             selection.collapse(display.childNodes.item(node), startPos + length);
         }
+        if (isSpan && !isStyled) {
+            addText('(');
+            addText(')');
+            moveCaretLeft();
+        }
         displayCount++;
     }
 }

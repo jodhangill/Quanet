@@ -173,7 +173,6 @@ function handleClick(event) {
     // Handle button clicks
     const display = document.getElementById('display');
     const size = window.getComputedStyle(display).getPropertyValue('font-size');
-    display.contentEditable = true;
     display.focus();
     setCaretPosition(lastFocusOffset);
 
@@ -181,7 +180,9 @@ function handleClick(event) {
 
     switch (id) {
         case 'backspace':
+            display.contentEditable = true;
             backspace();
+            display.contentEditable = false;
             break;
         case 'left':
             moveCaretLeft();
@@ -190,7 +191,9 @@ function handleClick(event) {
             moveCaretRight();
             break;
         case 'clear':
+            display.contentEditable = true;
             clearDisplay();
+            display.contentEditable = false;
             break;
         case 'done':
             window.location.href = '/configurator';
@@ -216,7 +219,6 @@ function handleClick(event) {
         setCaretToDefault();
     }
     lastFocusOffset = window.getSelection().focusOffset;
-    display.contentEditable = false;
 }
 
 function setClickHandlers() {

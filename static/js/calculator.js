@@ -1,6 +1,8 @@
 let lastFocusOffset = 0;
 let node = 0;
 let displayCount = 0;
+let parenBalance = 0;
+let saved = true;
 
 function setDisplaySize() {
     // Set the height of the calculator display based on other elements
@@ -26,7 +28,8 @@ function backspace() {
         let startPos = Math.min(selection.anchorOffset, selection.focusOffset);
         let afterText = display.childNodes[node].textContent.substring(startPos);
 
-        if (display.childNodes[node].textContent[startPos - 1] === "‎") {
+        var char = display.childNodes[node].textContent[startPos - 1];
+        if (char === "‎") {
             display.removeChild(display.childNodes[node].previousSibling);
             display.removeChild(display.childNodes[node - 1]);
             document.execCommand("delete", false, null);
@@ -37,6 +40,11 @@ function backspace() {
                 moveCaret(-afterText.length);
             }
         } else {
+            if (char === "(") {
+                parenBalance--;
+            } else if (char === ")"){
+                parenBalance++;
+            }
             document.execCommand("delete", false, null);
         }
         displayCount--;
@@ -169,6 +177,47 @@ function setCaretPosition(caretPos) {
     selection.collapse(display.childNodes[node], caretPos);
 }
 
+function formatOutput(text) {
+    // Put display text in parsable form
+    var formattedText = "";
+    // Remove invisible chars
+    for (let i = 0; i < text.length; i++) {
+        if (text.charCodeAt(i) !== "‎".charCodeAt(0)) {
+            formattedText += text.charAt(i);
+        }
+    }
+    return formattedText.replace(' ', '_');
+}
+
+function updateParenCounts() {
+    var open = document.getElementById('open');
+    var close = document.getElementById('close');
+    if (parenBalance < 0) {
+        open.innerText = -parenBalance;
+        close.innerText = '';
+    } else if (parenBalance > 0) {
+        close.innerText = parenBalance;
+        open.innerText = '';
+    } else {
+        close.innerText = '';
+        open.innerText = '';
+    }
+}
+
+function updateCaretPosition(size) {
+    // Update caret position
+    setCaretToDefault();
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+        const caret = document.getElementById('caret');
+        const range = selection.getRangeAt(0).getClientRects()?.[0];
+        if (range) {
+            caret.style.left = `${range.right}px`;
+            caret.style.top = `${range.top - 92 + parseInt(size, 10)}px`;
+        }
+    }
+}
+
 function handleClick(event) {
     // Handle button clicks
     const display = document.getElementById('display');
@@ -195,29 +244,36 @@ function handleClick(event) {
             clearDisplay();
             display.contentEditable = false;
             break;
-        case 'done':
-            window.location.href = '/configurator';
+        case 'save':
+            localStorage.setItem('fitnessText', formatOutput(display.innerText))
+            localStorage.setItem('displayHTML', display.innerHTML);
+            localStorage.setItem('displayCount', displayCount);
+            localStorage.setItem('parenBalance', parenBalance);
+            saved = true;
+            alert("Fitness function saved.");
+            return;
+        case 'continue':
+            window.location.href = '/configurator'
             break;
         default:
+            var text = event.target.firstChild.textContent
             if (event.target.classList.contains('metric')) {
                 const color = window.getComputedStyle(event.target).getPropertyValue('color');
-                addText(event.target.innerText, true, true, color, size);
-            } else if (event.target.innerText.length > 1) {
-                addText(event.target.innerText, true, false);
+                addText(text, true, true, color, size);
+            } else if (text.length > 1) {
+                addText(text, true, false);
             } else {
-                addText(event.target.innerText, false);
+                if (text === '(') {
+                    parenBalance++;
+                } else if (text === ')') {
+                    parenBalance--;
+                }
+                addText(text, false);
             }
     }
-
-    // Update caret position
-    const caret = document.getElementById('caret');
-    const range = window.getSelection().getRangeAt(0).getClientRects()[0];
-    if (range) {
-        caret.style.left = `${range.right}px`;
-        caret.style.top = `${range.top - 92 + parseInt(size, 10)}px`;
-    } else {
-        setCaretToDefault();
-    }
+    saved = false;
+    updateCaretPosition(size);
+    updateParenCounts();
     lastFocusOffset = window.getSelection().focusOffset;
 }
 
@@ -231,11 +287,35 @@ function setClickHandlers() {
     }
 }
 
-// Set up event listeners
+async function loadData() {
+    var displayHTML = localStorage.getItem('displayHTML');
+    if (displayHTML) {
+        await new Promise(r => setTimeout(r, 500));
+        const display = document.getElementById('display');
+        display.innerHTML = displayHTML;
+        displayCount = localStorage.getItem('displayCount');
+        parenBalance = localStorage.getItem('parenBalance');
+        for (let i = 0; i < displayCount; i++) {
+            moveCaretRight();
+        }
+        const size = window.getComputedStyle(display).getPropertyValue('font-size');
+        updateCaretPosition(size);
+        updateParenCounts()
+        lastFocusOffset = window.getSelection().focusOffset;
+    }
+}
+
+// Page setup
 window.onload = function () {
     setDisplaySize();
     setCaretToDefault();
     setClickHandlers();
+    loadData();
 };
-
 window.addEventListener('resize', setDisplaySize, true);
+function confirmExit() {
+    if (!saved) {
+        return "Unsaved changes will be lost.";
+    }
+}
+window.onbeforeunload = confirmExit;

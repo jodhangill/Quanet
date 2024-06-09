@@ -8,9 +8,10 @@ function setDisplaySize() {
     // Set the height of the calculator display based on other elements
     const calcPad = document.getElementById('calcPad');
     const displayContainer = document.getElementById('displayContainer');
-    const homeButton = document.getElementById('homeButton');
+    const progress = document.getElementById('progress')
 
-    displayContainer.style.height = `${window.innerHeight - calcPad.offsetHeight - homeButton.offsetHeight - 36}px`;
+    displayContainer.style.height = `${window.innerHeight - calcPad.offsetHeight - progress.offsetHeight}px`;
+    displayContainer.style.maxHeight = `${window.innerHeight - calcPad.offsetHeight - progress.offsetHeight}px`;
 }
 
 function setCaretToDefault() {
@@ -213,7 +214,11 @@ function updateCaretPosition(size) {
         const range = selection.getRangeAt(0).getClientRects()?.[0];
         if (range) {
             caret.style.left = `${range.right}px`;
-            caret.style.top = `${range.top - 92 + parseInt(size, 10)}px`;
+            if (size === '24px') {
+                caret.style.top = `${range.top - 74}px`;
+            } else {
+                caret.style.top = `${range.top - 74}px`;
+            }
         }
     }
 }

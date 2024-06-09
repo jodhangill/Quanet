@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,33 @@
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/animate.min.css') }}" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center custom-cursor">
-    <a id="homeButton" href="/" class="absolute top-0 left-0 m-4 text-sm hover:bg-indigo-100 text-white font-semibold 
-    hover:text-black py-2 px-4 
-    border border-white-500 hover:border-transparent rounded">
-        Home
-    </a>
-    {% block content %}
-    {% endblock %}
+
+<body class="bg-gray-900 text-white custom-cursor overflow-hidden">
+    <div id="progress" class="flex items-center justify-center">
+        <div class="w-full max-w-screen-lg">
+            <div class="w-full max-w-screen-lg p-4 flex justify-around">
+                <a href="/fitness" class="md:text-lg border-none">
+                    Fitness
+                </a>
+                <a href="/configurator" class="md:text-lg border-none">
+                    Configure
+                </a>
+                <a href="/configurator" class="md:text-lg border-none">
+                    Compute
+                </a>
+            </div>
+            <div id="progressBar" class="w-full">
+                <div id="bar" class="bg-white h-1 w-0 block duration-700 ease-out">&nbsp;</div>
+            </div>        
+        </div>        
+    </div>
+
+
+    <div class="min-h-screen flex items-center justify-center">
+        {% block content %}
+        {% endblock %}
+    </div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
+
 </html>

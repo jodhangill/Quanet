@@ -311,6 +311,10 @@ window.onload = function () {
     setCaretToDefault();
     setClickHandlers();
     loadData();
+    var isChromium = !!window.chrome;
+    if (!isChromium) {
+        alert("WARNING: This application is not optimized for your current browser.\n\nFor the best experience, please use Chrome or another Chromium-based browser.")
+    }
 };
 window.addEventListener('resize', setDisplaySize, true);
 function confirmExit() {

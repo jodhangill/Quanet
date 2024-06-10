@@ -12,6 +12,10 @@ function setDisplaySize() {
 
     displayContainer.style.height = `${window.innerHeight - calcPad.offsetHeight - progress.offsetHeight}px`;
     displayContainer.style.maxHeight = `${window.innerHeight - calcPad.offsetHeight - progress.offsetHeight}px`;
+
+    // Disable body scroll
+    const body = document.getElementsByTagName('body')[0];
+    body.style.overflow = 'hidden';
 }
 
 function setCaretToDefault() {
@@ -295,11 +299,11 @@ function setClickHandlers() {
 async function loadData() {
     var displayHTML = localStorage.getItem('displayHTML');
     if (displayHTML) {
-        await new Promise(r => setTimeout(r, 500));
         const display = document.getElementById('display');
         display.innerHTML = displayHTML;
         displayCount = localStorage.getItem('displayCount');
         parenBalance = localStorage.getItem('parenBalance');
+        await new Promise(r => setTimeout(r, 500));
         for (let i = 0; i < displayCount; i++) {
             moveCaretRight();
         }

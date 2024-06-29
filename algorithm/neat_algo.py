@@ -4,7 +4,8 @@ import yfinance as yf
 from . import config_parser, NeatStrategy
 
 # Download data example (TODO: Choose data from client-side)
-data = yf.download('SPY', '2007-08-01', '2008-07-01')
+data = yf.download('SPY', period="7d")
+print(data)
 
 def eval_genomes(genomes, config):
     for genome_id, genome in genomes:

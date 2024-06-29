@@ -23,6 +23,7 @@ def configurator():
 def process_form():
     # Get the client's IP address
     client_ip = request.remote_addr
+    print(client_ip)
 
     # Limit to one instance per IP
     with lock:

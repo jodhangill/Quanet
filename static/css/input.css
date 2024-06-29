@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom cursor */
+::-webkit-inner-spin-button { display: none; }
+::-webkit-calendar-picker-indicator {    background: url('../images/arrow-down.png') no-repeat center center;
+    padding: 0;
+    cursor: url('../images/custom-cursor.png'), auto;
+}
 * {
     cursor: url('../images/custom-cursor.png'), auto !important;
 }
@@ -23,13 +27,12 @@ button, a {
     @apply block text-white text-base font-bold mb-2;
 }
 
-#neatForm .input-container input:not([type="checkbox"]) {
-    @apply shadow bg-gray-900 appearance-none border-white border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none;
+#neatForm .input-container input:not([type="checkbox"]), #neatForm .input-container select {
+    @apply shadow hover:bg-gray-700 bg-gray-900 border-white border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none;
 }
 
 
-
-#neatForm * {
+#neatForm > *{
     animation: fadeInUp;
     animation-duration: 0.5s;
 }

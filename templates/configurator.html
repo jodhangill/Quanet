@@ -3,12 +3,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<script src="{{ url_for('static', filename='js/configurator.js') }}"></script>
 <div class="flex flex-col items-center justify-center min-h-screen">
     <form id="neatForm" class="bg-gray-950 shadow-md rounded px-8 pt-6 pb-8 mt-20 mb-20 form-container w-screen max-w-2xl">
         <h2 class="text-2xl mb-8">Configurator</h2>
+        <h2 class="text-xl mt-4 mb-4">Ticker Data</h2>
+        <div id="ticker_list" class="mb-5">
+            <div id="ticker_headings" class="flex justify-center my-5">
+                <div class="grid grid-cols-3 md:grid-cols-4 bg-gray-950 w-full py-2 px-2 teal-800 border-gray-500 border-b md:text-xl">
+                    <div>
+                        <span class="self-start">Ticker</span>
+                    </div>
+                    <div>
+                        <span>Interval</span>
+                    </div>
+                    <div>
+                        <span>Start</span>
+                    </div>
+                    <div class="col-start-3 md:col-start-4">
+                        <span>End</span>
+                    </div>
+                </div>  
+                <div class="w-12 invisible"></div>               
+            </div>
+            <div id="no_ticker_message" class="text-center w-full">
+                <span>No Data Added</span>
+            </div>
+        </div>
+
+        {{ input("Ticker:", "ticker", "text")}}
+        {{ input("Start Date:", "start_date", "date")}}
+        {{ input("End Date:", "end_date", "date")}}
+        <div class="input-container">
+            <div class="md:w-1/3">
+                <label for="">Interval</label>
+            </div>
+            <div class="md:w-2/3">
+                <select id="interval" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 ">
+                  <option value="1m">1 minute</option>
+                  <option value="2m">2 minutes</option>
+                  <option value="5m">5 minutes</option>
+                  <option value="15m">15 minutes</option>
+                  <option value="30m">30 minutes</option>
+                  <option value="60m">60 minutes</option>
+                  <option value="90m">90 minutes</option>
+                  <option value="1h">1 hour</option>
+                  <option selected value="1d">1 day</option>
+                  <option value="5d">5 days</option>
+                  <option value="1wk">1 week</option>
+                  <option value="1mo">1 month</option>
+                  <option value="3mo">3 months</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex justify-end">
+            <button class="self-end" onclick="addTickerData(event)">Add</button>        
+        </div>
+
         <h2 class="text-xl mt-4 mb-4">NEAT Parameters</h2>
-    
         {{ input("Fitness Criterion:", "fitness_criterion", "text", "max")}}
         {{ input("Fitness Threshold:", "fitness_threshold", "number", "3.9")}}
         {{ input("Population Size:", "pop_size", "number", "150")}}

@@ -1,19 +1,3 @@
-var tickerTemplate = `
-<div class="ticker_data flex justify-center px-2 my-5">
-    <div class="bg-gray-800 w-full py-2 px-4 teal-800 border-gray-500 border border-r-0 rounded rounded-r-none flex justify-between md:text-xl">
-        <div>
-            <span class='ticker'></span>
-        </div>
-        <div>
-            <span class='interval'></span>
-            <span class='start'></span>
-            <span class='end'></span>
-        </div>
-    </div>  
-    <button onclick="removeData(event, this)" class="bg-gray-800 border-gray-500 rounded-l-none">✕</button>                
-</div>
-`
-
 function removeData(event, button) {
     event.preventDefault();
     var element = button.closest('.ticker_data');
@@ -35,25 +19,32 @@ function addTickerData(event) {
     var end = document.getElementById('end_date')
     var interval = document.getElementById('interval')
 
+    ticker.style.borderColor = '';
+    interval.style.borderColor = '';
+    start.style.borderColor = '';
+    end.style.borderColor = '';
+
+    var missing = false;
     if (!ticker.value) {
-        ticker.style.borderColor = 'red';
-        return;
+        ticker.style.borderColor = 'orange';
+        missing = true;
     }
     if (!interval.value) {
-        interval.style.borderColor = 'red';
-        return;
+        interval.style.borderColor = 'orange';
+        missing = true;
     }
     if (!start.value) {
-        start.style.borderColor = 'red';
-        return;
+        start.style.borderColor = 'orange';
+        missing = true;
     }
     if (!end.value) {
-        end.style.borderColor = 'red';
-        return;
+        end.style.borderColor = 'orange';
+        missing = true;
     }
+    if (missing) return;
     var tickerTemplate = `
             <div class="ticker_data flex justify-center my-5">
-                <div class="grid grid-cols-3 md:grid-cols-4 bg-gray-800 w-full py-2 px-2 border-gray-500 border border-r-0 rounded rounded-r-none md:text-xl">
+                <div class="ticker_data_container">
                     <div>
                         <span class='ticker'>${ticker.value}</span>
                     </div>
@@ -67,7 +58,7 @@ function addTickerData(event) {
                         <span class='end' value=${end.value}>${end.value.substring(2)}</span>
                     </div>
                 </div>  
-                <button onclick="removeData(event, this)" class="w-12 bg-gray-800 border-gray-500 rounded-l-none">✕</button>                
+                <button onclick="removeData(event, this)" class="x-button">✕</button>                
             </div>
         `
     var tickerList = document.getElementById('ticker_list');
@@ -93,8 +84,8 @@ window.onload = function () {
         const result = Array.from(tickerDatas).map(div => {
             const ticker = div.querySelector('.ticker').innerText;
             const interval = div.querySelector('.interval').innerText;
-            const start = div.querySelector('.start').innerText;
-            const end = div.querySelector('.end').innerText;
+            const start = div.querySelector('.start').getAttribute('value');
+            const end = div.querySelector('.end').getAttribute('value');
 
             return {
                 ticker,
@@ -103,13 +94,12 @@ window.onload = function () {
                 end
             };
         });
-        datas = JSON.stringify(result);
+        const datas = JSON.stringify(result);
         var formData = new FormData(this);
+        formData.append("datas", datas)
         fetch("/process-form", {
             method: "POST",
-            body: {
-                formData,
-            }
+            body: formData
         })
             .then(response => response.json())
             .then(data => {

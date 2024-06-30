@@ -10,13 +10,13 @@
 </div>
 {% endmacro %}
 
-{% macro input(label_text, id, type, value)%}
+{% macro input(label_text, id, type, value, placeholder)%}
 <div class="input-container">
     <div class="md:w-1/3">
         <label for="{{ id }}">{{ label_text }}</label>
     </div>
     <div class="md:w-2/3">
-        <input type="{{ type }}" id="{{ id }}" name="{{ id }}" value="{{ value }}">
+        <input type="{{ type }}" placeholder="{{ placeholder }}" id="{{ id }}" name="{{ id }}" value="{{ value }}">
     </div>
 </div>
 {% endmacro %}

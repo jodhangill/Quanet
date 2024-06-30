@@ -1,6 +1,7 @@
 import threading
 from flask import Flask, render_template, request, jsonify
 from algorithm import neat_algo
+import json
 
 app = Flask(__name__)
 running_ips = {}
@@ -32,15 +33,16 @@ def process_form():
         running_ips[client_ip] = True
 
     try:
-        data = request.form.to_dict()
+        config = request.form.to_dict()
+        data_requests = json.loads(request.form['datas'])
 
         # Parse boolean values correctly
-        data['reset_on_extinction'] = data.get('reset_on_extinction') == 'on'
-        data['enabled_default'] = data.get('enabled_default') == 'on'
-        data['feed_forward'] = data.get('feed_forward') == 'on'
+        config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'
+        config['enabled_default'] = config.get('enabled_default') == 'on'
+        config['feed_forward'] = config.get('feed_forward') == 'on'
 
         # Run algorithm from form config data
-        result =  neat_algo.run(data)
+        result =  neat_algo.run(config, data_requests)
 
         return jsonify({'message': result})
     finally:

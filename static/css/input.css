@@ -31,6 +31,13 @@ button, a {
     @apply shadow hover:bg-gray-700 bg-gray-900 border-white border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none;
 }
 
+.ticker_data_container {
+    @apply grid grid-cols-3 md:grid-cols-4 bg-gray-800 w-full py-2 px-2 border-gray-500 border border-r-0 rounded rounded-r-none md:text-xl;
+}
+
+.x-button {
+    @apply w-12 bg-gray-800 border-gray-500 rounded-l-none;
+}
 
 #neatForm > *{
     animation: fadeInUp;

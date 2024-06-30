@@ -12,7 +12,7 @@
             <div id="ticker_headings" class="flex justify-center my-5">
                 <div class="grid grid-cols-3 md:grid-cols-4 bg-gray-950 w-full py-2 px-2 teal-800 border-gray-500 border-b md:text-xl">
                     <div>
-                        <span class="self-start">Ticker</span>
+                        <span >Ticker</span>
                     </div>
                     <div>
                         <span>Interval</span>
@@ -145,28 +145,14 @@
         {{ input("Elitism:", "elitism", "number", "2")}}
         {{ input("Survival Threshold:", "survival_threshold", "number", "0.2")}}
     
-        <div class="flex items-center justify-between">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">Start</button>
+        <div class="bg-gray-900 flex fixed left-0 bottom-0 w-screen items-center justify-center">
+            <div class="w-full max-w-screen-md flex justify-end px-8 py-2">
+                <button type="submit" class=" text-xl bg-gray-800 py-2 px-5 rounded focus:outline-none focus:shadow-outline" type="button">Start</button>
+            </div>
         </div>
     </form>
-    
+
 </div>
 <div id="output"></div>
 
-<script>
-    // Send config to server
-    document.getElementById("neatForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        var formData = new FormData(this);
-        fetch("/process-form", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("output").innerText = "Response: " + data.message;
-            })
-            .catch(error => console.error('Error:', error));
-    });
-</script>
 {% endblock %}

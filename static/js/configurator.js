@@ -85,37 +85,41 @@ async function loadData() {
     }
 }
 
-window.onload = function () {
-    document.getElementById("neatForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        var tickerDatas = document.getElementsByClassName('ticker_data');
+function submit(event) {
+    event.preventDefault();
+    var tickerDatas = document.getElementsByClassName('ticker_data');
 
-        const result = Array.from(tickerDatas).map(div => {
-            const ticker = div.querySelector('.ticker').innerText;
-            const interval = div.querySelector('.interval').innerText;
-            const start = div.querySelector('.start').getAttribute('value');
-            const end = div.querySelector('.end').getAttribute('value');
+    const result = Array.from(tickerDatas).map(div => {
+        const ticker = div.querySelector('.ticker').innerText;
+        const interval = div.querySelector('.interval').innerText;
+        const start = div.querySelector('.start').getAttribute('value');
+        const end = div.querySelector('.end').getAttribute('value');
 
-            return {
-                ticker,
-                interval,
-                start,
-                end
-            };
-        });
-        const datas = JSON.stringify(result);
-        var formData = new FormData(this);
-        formData.append("datas", datas)
-        fetch("/process-form", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("output").innerText = "Response: " + data.message;
-            })
-            .catch(error => console.error('Error:', error));
+        return {
+            ticker,
+            interval,
+            start,
+            end
+        };
     });
+    const datas = JSON.stringify(result);
+    var fitness = localStorage.getItem('fitnessText');
+    var formData = new FormData(this);
+    formData.append("datas", datas);
+    formData.append("fitness", fitness);
+    fetch("/process-form", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("output").innerText = "Response: " + data.message;
+        })
+        .catch(error => console.error('Error:', error));
+};
+
+window.onload = function () {
+    document.getElementById("neatForm").addEventListener("submit", submit);
     loadData();
 };
 

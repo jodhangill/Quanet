@@ -35,6 +35,7 @@ def process_form():
     try:
         config = request.form.to_dict()
         data_requests = json.loads(request.form['datas'])
+        print(request.form['fitness'])
 
         # Parse boolean values correctly
         config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'

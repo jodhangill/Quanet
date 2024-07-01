@@ -2,11 +2,11 @@ function removeData(event, button) {
     event.preventDefault();
     var element = button.closest('.ticker_data');
     element.parentNode.removeChild(element);
-    var tickerList = document.getElementById('ticker_list');
+    var tickerList = document.getElementById('tickerList');
     var dataList = document.getElementsByClassName('ticker_data');
     if (dataList.length == 0) {
         tickerList.innerHTML += `            
-            <div id="no_ticker_message" class="text-center w-full">
+            <div id="noTickerMessage" class="text-center w-full">
                 <span>No Data Added</span>
             </div>`;
     }
@@ -15,8 +15,8 @@ function removeData(event, button) {
 function addTickerData(event) {
     event.preventDefault();
     var ticker = document.getElementById('ticker')
-    var start = document.getElementById('start_date')
-    var end = document.getElementById('end_date')
+    var start = document.getElementById('startDate')
+    var end = document.getElementById('endDate')
     var interval = document.getElementById('interval')
 
     ticker.style.borderColor = '';
@@ -61,8 +61,8 @@ function addTickerData(event) {
                 <button onclick="removeData(event, this)" class="x-button">✕</button>                
             </div>
         `
-    var tickerList = document.getElementById('ticker_list');
-    var message = document.getElementById('no_ticker_message');
+    var tickerList = document.getElementById('tickerList');
+    var message = document.getElementById('noTickerMessage');
     if (message) {
         tickerList.removeChild(message);
     }
@@ -74,6 +74,15 @@ function addTickerData(event) {
     interval.style.borderColor = '';
     start.style.borderColor = '';
     end.style.borderColor = '';
+}
+
+async function loadData() {
+    var displayHTML = localStorage.getItem('displayHTML');
+    console.log(displayHTML)
+    if (displayHTML) {
+        const fitness = document.getElementById('fitness');
+        fitness.innerHTML = displayHTML;
+    }
 }
 
 window.onload = function () {
@@ -107,6 +116,7 @@ window.onload = function () {
             })
             .catch(error => console.error('Error:', error));
     });
+    loadData();
 };
 
 

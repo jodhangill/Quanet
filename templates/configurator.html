@@ -7,9 +7,14 @@
 <div class="flex flex-col items-center justify-center min-h-screen">
     <form id="neatForm" class="bg-gray-950 shadow-md rounded px-8 pt-6 pb-8 mt-20 mb-20 form-container w-screen max-w-2xl">
         <h2 class="text-2xl mb-8">Configurator</h2>
+        <h2 class="text-xl mt-4 mb-4 h-3">Fitness Function</h2>
+        <div class="relative">
+            <div id="fitness" class="text-xl whitespace-nowrap overflow-y-hidden overflow-x-auto"></div>
+            <div class="fade"></div>
+        </div>
         <h2 class="text-xl mt-4 mb-4">Ticker Data</h2>
-        <div id="ticker_list" class="mb-5">
-            <div id="ticker_headings" class="flex justify-center my-5">
+        <div id="tickerList" class="mb-5">
+            <div id="tickerHeadings" class="flex justify-center my-5">
                 <div class="grid grid-cols-3 md:grid-cols-4 bg-gray-950 w-full py-2 px-2 border-gray-500 border-b md:text-xl">
                     <div>
                         <span>Ticker</span>
@@ -26,7 +31,7 @@
                 </div>  
                 <div class="w-12 invisible"></div>               
             </div>
-            <div id="no_ticker_message" class="text-center w-full">
+            <div id="noTickerMessage" class="text-center w-full">
                 <span>No Data Added</span>
             </div>
         </div>

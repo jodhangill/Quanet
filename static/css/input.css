@@ -2,16 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-::-webkit-inner-spin-button { display: none; }
-::-webkit-calendar-picker-indicator {    background: url('../images/arrow-down.png') no-repeat center center;
+::-webkit-inner-spin-button {
+    display: none;
+}
+
+::-webkit-calendar-picker-indicator {
+    background: url('../images/arrow-down.png') no-repeat center center;
     padding: 0;
     cursor: url('../images/custom-cursor.png'), auto;
 }
+
 * {
     cursor: url('../images/custom-cursor.png'), auto !important;
 }
 
-button, a {
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    @apply bg-gray-700
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    @apply bg-white
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #cccccc;
+}
+
+button,
+a {
     @apply bg-transparent shadow-lg hover:bg-indigo-100 text-white font-semibold hover:text-black py-2 px-4 border border-white hover:border-transparent rounded;
 }
 
@@ -27,7 +54,8 @@ button, a {
     @apply block text-white text-base font-bold mb-2;
 }
 
-#neatForm .input-container input:not([type="checkbox"]), #neatForm .input-container select {
+#neatForm .input-container input:not([type="checkbox"]),
+#neatForm .input-container select {
     @apply shadow hover:bg-gray-700 bg-gray-900 border-white border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none;
 }
 
@@ -39,7 +67,21 @@ button, a {
     @apply w-12 bg-gray-800 border-gray-500 rounded-l-none;
 }
 
-#neatForm > *{
+.fade {
+    position: absolute;
+    top: 0px;
+
+    display: block;
+
+    width: 100%;
+    height: 29px;
+    pointer-events: none;
+    background-image: linear-gradient(to right,
+            rgba(255, 255, 255, 0) 96%,
+            rgba(0, 0, 0, 0.9) 100%);
+}
+
+#neatForm>* {
     animation: fadeInUp;
     animation-duration: 0.5s;
 }

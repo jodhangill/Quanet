@@ -262,6 +262,11 @@ function handleClick(event) {
             alert("Fitness function saved.");
             return;
         case 'continue':
+            localStorage.setItem('fitnessText', formatOutput(display.innerText))
+            localStorage.setItem('displayHTML', display.innerHTML);
+            localStorage.setItem('displayCount', displayCount);
+            localStorage.setItem('parenBalance', parenBalance);
+            saved = true;
             window.location.href = '/configurator'
             break;
         default:

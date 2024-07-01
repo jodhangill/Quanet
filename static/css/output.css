@@ -696,6 +696,10 @@ video {
   height: 2.5rem;
 }
 
+.h-3 {
+  height: 0.75rem;
+}
+
 .h-5 {
   height: 1.25rem;
 }
@@ -1056,7 +1060,35 @@ video {
   cursor: url('../images/custom-cursor.png'), auto !important;
 }
 
-button, a {
+/* width */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cccccc;
+}
+
+button,
+a {
   border-radius: 0.25rem;
   border-width: 1px;
   --tw-border-opacity: 1;
@@ -1074,7 +1106,8 @@ button, a {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-button:hover, a:hover {
+button:hover,
+a:hover {
   border-color: transparent;
   --tw-bg-opacity: 1;
   background-color: rgb(224 231 255 / var(--tw-bg-opacity));
@@ -1121,7 +1154,8 @@ button:hover, a:hover {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-#neatForm .input-container input:not([type="checkbox"]), #neatForm .input-container select {
+#neatForm .input-container input:not([type="checkbox"]),
+#neatForm .input-container select {
   width: 100%;
   border-radius: 0.25rem;
   border-width: 1px;
@@ -1141,12 +1175,14 @@ button:hover, a:hover {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-#neatForm .input-container input:not([type="checkbox"]):hover, #neatForm .input-container select:hover {
+#neatForm .input-container input:not([type="checkbox"]):hover,
+#neatForm .input-container select:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
-#neatForm .input-container input:not([type="checkbox"]):focus, #neatForm .input-container select:focus {
+#neatForm .input-container input:not([type="checkbox"]):focus,
+#neatForm .input-container select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
 }
@@ -1188,7 +1224,19 @@ button:hover, a:hover {
   background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
 
-#neatForm > *{
+.fade {
+  position: absolute;
+  top: 0px;
+  display: block;
+  width: 100%;
+  height: 29px;
+  pointer-events: none;
+  background-image: linear-gradient(to right,
+            rgba(255, 255, 255, 0) 96%,
+            rgba(0, 0, 0, 0.9) 100%);
+}
+
+#neatForm>* {
   animation: fadeInUp;
   animation-duration: 0.5s;
 }

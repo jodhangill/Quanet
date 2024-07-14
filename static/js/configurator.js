@@ -1,3 +1,8 @@
+function saveTickers() {
+    var list = document.getElementById('tickerList');
+    localStorage.setItem('tickerList', list.innerHTML);
+}
+
 function removeData(event, button) {
     event.preventDefault();
     var element = button.closest('.ticker_data');
@@ -11,6 +16,7 @@ function removeData(event, button) {
                 <span>No Data Added</span>
             </div>`;
     }
+    saveTickers();
 }
 
 function addTickerData(event) {
@@ -59,7 +65,7 @@ function addTickerData(event) {
                         <span class='end' value=${end.value}>${end.value.substring(2)}</span>
                     </div>
                 </div>  
-                <button onclick="removeData(event, this)" class="x-button">✕</button>                
+                <button onclick="removeData(event, this)" type="button" class="x-button">✕</button>                
             </div>
         `
     var tickerList = document.getElementById('tickerList');
@@ -75,32 +81,7 @@ function addTickerData(event) {
     interval.style.borderColor = '';
     start.style.borderColor = '';
     end.style.borderColor = '';
-}
-
-function jumpTo(id) {
-    const element = document.getElementById(id);
-    element.scrollIntoView();
-    window.scrollBy(0, -100);
-}
-
-function openJumpTo() {
-    const dropDown = document.getElementById('drop-down');
-    dropDown.hidden = false;
-}
-
-function closeJumpTo() {
-    const dropDown = document.getElementById('drop-down');
-    dropDown.hidden = true;
-}
-
-function toggleJumpTo(event) {
-    const dropDown = document.getElementById('drop-down');
-    if (dropDown.hidden) {
-        dropDown.hidden = false;
-    }
-    else {
-        dropDown.hidden = true;
-    }
+    saveTickers();
 }
 
 function jumpTo(id) {
@@ -131,10 +112,15 @@ function toggleJumpTo(event) {
 
 async function loadData() {
     var displayHTML = localStorage.getItem('displayHTML');
-    console.log(displayHTML)
     if (displayHTML) {
         const fitness = document.getElementById('fitness');
         fitness.innerHTML = displayHTML;
+    }
+    
+    var listHTML = localStorage.getItem('tickerList');
+    if (listHTML) {
+        const list = document.getElementById('tickerList');
+        list.innerHTML = listHTML;
     }
 }
 

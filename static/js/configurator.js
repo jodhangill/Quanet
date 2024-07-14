@@ -3,6 +3,7 @@ function removeData(event, button) {
     var element = button.closest('.ticker_data');
     element.parentNode.removeChild(element);
     var tickerList = document.getElementById('tickerList');
+    var tickerList = document.getElementById('tickerList');
     var dataList = document.getElementsByClassName('ticker_data');
     if (dataList.length == 0) {
         tickerList.innerHTML += `            
@@ -74,6 +75,58 @@ function addTickerData(event) {
     interval.style.borderColor = '';
     start.style.borderColor = '';
     end.style.borderColor = '';
+}
+
+function jumpTo(id) {
+    const element = document.getElementById(id);
+    element.scrollIntoView();
+    window.scrollBy(0, -100);
+}
+
+function openJumpTo() {
+    const dropDown = document.getElementById('drop-down');
+    dropDown.hidden = false;
+}
+
+function closeJumpTo() {
+    const dropDown = document.getElementById('drop-down');
+    dropDown.hidden = true;
+}
+
+function toggleJumpTo(event) {
+    const dropDown = document.getElementById('drop-down');
+    if (dropDown.hidden) {
+        dropDown.hidden = false;
+    }
+    else {
+        dropDown.hidden = true;
+    }
+}
+
+function jumpTo(id) {
+    const element = document.getElementById(id);
+    element.scrollIntoView();
+    window.scrollBy(0, -100);
+}
+
+function openJumpTo() {
+    const dropDown = document.getElementById('drop-down');
+    dropDown.hidden = false;
+}
+
+function closeJumpTo() {
+    const dropDown = document.getElementById('drop-down');
+    dropDown.hidden = true;
+}
+
+function toggleJumpTo(event) {
+    const dropDown = document.getElementById('drop-down');
+    if (dropDown.hidden) {
+        dropDown.hidden = false;
+    }
+    else {
+        dropDown.hidden = true;
+    }
 }
 
 async function loadData() {

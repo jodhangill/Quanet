@@ -5,7 +5,7 @@
 {% block content %}
 <script src="{{ url_for('static', filename='js/configurator.js') }}"></script>
 <div class="flex flex-col items-center justify-center min-h-screen">
-    <form id="neatForm" onchange="save()" class="bg-gray-950 shadow-md rounded px-8 pt-6 pb-8 mt-20 mb-20 form-container w-screen max-w-2xl">
+    <form id="neatForm" onchange="saveAll()" class="bg-gray-950 shadow-md rounded px-8 pt-6 pb-8 mt-20 mb-20 form-container w-screen max-w-2xl">
         <h2 class="text-2xl mb-8">Configurator</h2>
         <h2 class="text-xl mt-4 mb-4 h-3">Fitness Function</h2>
         <div class="relative">
@@ -150,6 +150,7 @@
         {{ input("Elitism:", "elitism", "number", "2")}}
         {{ input("Survival Threshold:", "survival_threshold", "number", "0.2")}}
     
+        <button type="button" onclick="localStorage.clear(); location.reload();">Restore All To Default</button>
         <div class="flex fixed max-h-14 left-0 bottom-0 w-screen items-center justify-center">
             <div class="w-full bg-gray-800 rounded-t-md max-w-screen-md flex justify-between p-3">
                 <div>

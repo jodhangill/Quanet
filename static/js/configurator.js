@@ -1,6 +1,6 @@
-function saveTickers() {
-    var list = document.getElementById('tickerList');
-    localStorage.setItem('tickerList', list.innerHTML);
+function saveAll() {
+    var form = document.getElementById('neatForm');
+    localStorage.setItem('formHTML', form.innerHTML);
 }
 
 function removeData(event, button) {
@@ -16,7 +16,7 @@ function removeData(event, button) {
                 <span>No Data Added</span>
             </div>`;
     }
-    saveTickers();
+    saveAll();
 }
 
 function addTickerData(event) {
@@ -81,7 +81,7 @@ function addTickerData(event) {
     interval.style.borderColor = '';
     start.style.borderColor = '';
     end.style.borderColor = '';
-    saveTickers();
+    saveAll();
 }
 
 function jumpTo(id) {
@@ -111,16 +111,16 @@ function toggleJumpTo(event) {
 }
 
 async function loadData() {
+    var formHTML = localStorage.getItem('formHTML');
+    if (formHTML) {
+        const list = document.getElementById('neatForm');
+        list.innerHTML = formHTML;
+    }
+
     var displayHTML = localStorage.getItem('displayHTML');
     if (displayHTML) {
         const fitness = document.getElementById('fitness');
         fitness.innerHTML = displayHTML;
-    }
-    
-    var listHTML = localStorage.getItem('tickerList');
-    if (listHTML) {
-        const list = document.getElementById('tickerList');
-        list.innerHTML = listHTML;
     }
 }
 
@@ -157,9 +157,37 @@ function submit(event) {
         .catch(error => console.error('Error:', error));
 };
 
+// Save current input state to its HTML
+function saveInput(event) {
+    if (event) {
+        var element = event.target;
+        if (element.tagName == 'INPUT') {
+            if (element.type == 'checkbox') {
+                if (!element.checked) {
+                    element.removeAttribute('checked')
+                }
+                else {
+                    element.setAttribute('checked', true)
+                }
+            }
+            else {
+                element.setAttribute('value', element.value);
+            }
+        } 
+    }
+}
+
+function setChangeListeners() {
+    const inputElements = document.querySelectorAll('input, select');
+    inputElements.forEach(input => {
+        input.addEventListener('change', saveInput);
+    })
+}
+
 window.onload = function () {
     document.getElementById("neatForm").addEventListener("submit", submit);
     loadData();
+    setChangeListeners();
 };
 
 

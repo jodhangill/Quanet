@@ -35,7 +35,8 @@ def process_form():
     try:
         config = request.form.to_dict()
         data_requests = json.loads(request.form['datas'])
-        print(request.form['fitness'])
+        fitness_function = request.form['fitness']
+
 
         # Parse boolean values correctly
         config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'
@@ -43,7 +44,7 @@ def process_form():
         config['feed_forward'] = config.get('feed_forward') == 'on'
 
         # Run algorithm from form config data
-        result =  neat_algo.run(config, data_requests)
+        result =  neat_algo.run(config, data_requests, fitness_function)
 
         return jsonify({'message': result})
     finally:

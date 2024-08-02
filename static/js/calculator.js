@@ -191,7 +191,7 @@ function formatOutput(text) {
             formattedText += text.charAt(i);
         }
     }
-    return formattedText.replace(' ', '_');
+    return formattedText.replace(/ /g, '_').toLowerCase();
 }
 
 function updateParenCounts() {

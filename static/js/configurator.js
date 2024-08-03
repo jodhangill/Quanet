@@ -150,9 +150,10 @@ function submit(event) {
         method: "POST",
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("output").innerText = "Response: " + data.message;
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
         })
         .catch(error => console.error('Error:', error));
 };

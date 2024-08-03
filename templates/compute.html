@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+{% endblock %}
+
+{% block content %}
+<button id="run-button" onclick="run()">Run Python</button>
+<script>
+    let pyodide;
+    let micropip;
+    let pythonCode;
+    
+    async function run() {
+        const button = document.getElementById("run-button");
+        button.textContent = "..."; // Change button text to "..."
+
+        try {
+            // Run the Python code
+            await pyodide.runPythonAsync(pythonCode);
+        } catch (error) {
+            console.error('Error running Python code:', error);
+        } finally {
+            button.textContent = "Run Python"; // Revert button text to "Run Python"
+        }
+    }
+
+    /* 
+    Python cannot import from files on the server-side normally.
+    This is a solution that removes the need for these imports on client-side by concatenating the file contents.
+    Only works for start imports: "from _____ import *".
+    */
+    async function getPythonCode(filePath) {
+        // Get python code from file and its file imports
+        try {
+            let response = await fetch(filePath);
+            if (!response.ok) {
+                throw new Error('Failed to fetch the file');
+            }
+            let pythonCode = await response.text();
+            // Get imported file contents
+            let lines = pythonCode.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+                // Look for lines that resemble "from _____ import *"
+                let words = lines[i].trim().split(/\s+/);
+                if (words[0] === "from") {
+                    // Get the name of module that is being imported from
+                    moduleName = words[1];
+                    lines[i] = await getPythonCode(`${moduleName}.py`);
+                } else {
+                    // Exit the loop if the line is not an import from a file
+                    break;
+                }
+            }
+            concatPythonCode = lines.join('\n')
+            return concatPythonCode;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
+    async function main() {
+        pyodide = await loadPyodide();
+
+        // Import modules
+        await pyodide.loadPackage("micropip");
+        micropip = pyodide.pyimport("micropip");
+        let code_response = await fetch('static/compute/compute.py')
+        code = await code_response.text();
+        console.log(code)
+
+        pyodide.runPython(code);
+    }
+    main();
+</script>
+{% endblock %}

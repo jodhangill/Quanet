@@ -1,9 +1,12 @@
+import os
 import threading
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from algorithm import neat_algo
 import json
 
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
+
 running_ips = {}
 lock = threading.Lock()
 
@@ -43,13 +46,31 @@ def process_form():
         config['enabled_default'] = config.get('enabled_default') == 'on'
         config['feed_forward'] = config.get('feed_forward') == 'on'
 
-        # Run algorithm from form config data
-        result =  neat_algo.run(config, data_requests, fitness_function)
+        # Store parameters in session
+        session['config'] = config
+        session['data_requests'] = data_requests
+        session['fitness_function'] = fitness_function
 
-        return jsonify({'message': result})
+        # Pass parameters to compute route
+        return redirect(url_for('compute'))
     finally:
         with lock:
             running_ips[client_ip] = False
+
+@app.route('/compute')
+def compute():
+    # Retrieve parameters from session
+    config = session.get('config')
+    data_requests = session.get('data_requests')
+    fitness_function = session.get('fitness_function')
+
+    if not config or not data_requests or not fitness_function:
+        return "Error: Missing data in session"
+
+    return render_template('compute.html')
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

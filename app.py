@@ -1,14 +1,27 @@
+import mimetypes
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 import os
 import threading
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
-from algorithm import neat_algo
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_file
 import json
+import pandas as pd
+import zipfile
+import io
+import yfinance as yf
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 running_ips = {}
 lock = threading.Lock()
+
+def download_data(data_requests):
+    datas = []
+    for data_request in data_requests:
+        data = yf.download(data_request.get('ticker'), start=data_request.get('start'), end=data_request.get('end'), interval=data_request.get('interval'))
+        datas.append(data.to_csv())
+    return datas
 
 @app.route('/')
 def home():
@@ -59,18 +72,39 @@ def process_form():
 
 @app.route('/compute')
 def compute():
-    # Retrieve parameters from session
-    config = session.get('config')
-    data_requests = session.get('data_requests')
-    fitness_function = session.get('fitness_function')
-
-    if not config or not data_requests or not fitness_function:
-        return "Error: Missing data in session"
-
     return render_template('compute.html')
 
+@app.route('/get-session-data', methods=['GET'])
+def get_session_data():
+    config = session.get('config')
+    fitness_function = session.get('fitness_function')
 
+    if not config or not fitness_function:
+        return jsonify({'error': 'Missing data in session'}), 400
 
+    return jsonify({
+        'config': config,
+        'fitness_function': fitness_function
+    })
+
+@app.route('/get-stock-data', methods=['GET'])
+def get_stock_data():
+    data_requests = session.get('data_requests')
+    if not data_requests:
+        return jsonify({'error': 'Missing data in session'}), 400
+    
+    stock_data = download_data(data_requests)
+
+    # Create an in-memory ZIP file
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+        for i, csv_data in enumerate(stock_data):
+            filename = f"data{i+1}.csv"
+            zip_file.writestr(filename, csv_data)
+
+    zip_buffer.seek(0)
+    # Send the ZIP file
+    return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name='data.zip')
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

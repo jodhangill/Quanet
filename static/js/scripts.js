@@ -12,5 +12,7 @@ if (currentRoute === '/') {
     updateProgressBar(33);
 } else if (currentRoute === '/configurator'){
     updateProgressBar(66);
-}     
+} else if (currentRoute === '/compute'){
+    updateProgressBar(100);
+}
 

@@ -273,6 +273,8 @@ def run(config_file, datas, fitness_function):
     return format(winner)
 
 def main():
+    log("Running...")
+    log("Please do not close this window.")
     config = getattr(js, 'config')
     process_config(json.loads(config))
     fitness_function = getattr(js, 'fit_func')

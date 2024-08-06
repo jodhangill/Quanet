@@ -8,7 +8,7 @@ import time
 from neat.math_util import mean, stdev
 
 def log(msg):
-    result_dict = {"results": msg}
+    result_dict = {"update": msg}
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
@@ -259,6 +259,8 @@ def run(config_file, datas, fitness_function):
 
     p = neat.Population(config)
     p.add_reporter(CustomReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
 
     max_generations = 10
     try:

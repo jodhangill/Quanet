@@ -7,15 +7,22 @@ pyodideWorker.onmessage = (event) => {
     if (typeof data === 'string') {
         data = JSON.parse(data)
     }
-    console.log(data)
-    const {results, error} = data
+
+    const {update, results, error} = data
     let log = document.getElementById("log")
     if (error) {
         console.log(error)
         log.innerText += '\n' + error + '\n'
     }
-    console.log(results)
-    log.innerText += '\n' + results + '\n'
+    if (update) {
+        console.log(update)
+        log.innerText += '\n' + update + '\n'
+    }
+    if (results) {
+        console.log(results)
+        log.innerText += '\n' + results + '\n'        
+    }
+
 };
 
 const asyncRun = (() => {

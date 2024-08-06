@@ -3,10 +3,19 @@ const pyodideWorker = new Worker("static/js/compute/webworker.js");
 const callbacks = {};
 
 pyodideWorker.onmessage = (event) => {
-    const { id, ...data } = event.data;
-    const onSuccess = callbacks[id];
-    delete callbacks[id];
-    onSuccess(data);
+    let data = event.data
+    if (typeof data === 'string') {
+        data = JSON.parse(data)
+    }
+    console.log(data)
+    const {results, error} = data
+    let log = document.getElementById("log")
+    if (error) {
+        console.log(error)
+        log.innerText += '\n' + error + '\n'
+    }
+    console.log(results)
+    log.innerText += '\n' + results + '\n'
 };
 
 const asyncRun = (() => {

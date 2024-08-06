@@ -4,6 +4,13 @@ import numpy as np
 import configparser
 import json
 import js
+import time
+from neat.math_util import mean, stdev
+
+def log(msg):
+    result_dict = {"results": msg}
+    result_string = json.dumps(result_dict)
+    js.postMessage(result_string)
 
 def process_config(params):
     config = configparser.ConfigParser()
@@ -169,12 +176,81 @@ def eval_genomes(genomes, config, fitness_function, datas):
 
             # Calculate fitness with error handling
             try:
-                fitness = eval(fitness_function)
+                fitness = eval(fitness_function) or float('-inf')
             except Exception as e:
                 print(f"Error evaluating fitness function: {e}")
                 fitness = float('-inf')
 
             genome.fitness += fitness
+
+class CustomReporter(neat.reporting.BaseReporter):
+    def __init__(self, show_species_detail):
+        self.show_species_detail = show_species_detail
+        self.generation = None
+        self.generation_start_time = None
+        self.generation_times = []
+        self.num_extinctions = 0
+
+    def start_generation(self, generation):
+        self.generation = generation
+        log('\n ****** Running generation {0} ****** \n'.format(generation))
+        self.generation_start_time = time.time()
+
+    def end_generation(self, config, population, species_set):
+        ng = len(population)
+        ns = len(species_set.species)
+        if self.show_species_detail:
+            log('Population of {0:d} members in {1:d} species:'.format(ng, ns))
+            log("   ID   age  size   fitness   adj fit  stag")
+            log("  ====  ===  ====  =========  =======  ====")
+            for sid in sorted(species_set.species):
+                s = species_set.species[sid]
+                a = self.generation - s.created
+                n = len(s.members)
+                f = "--" if s.fitness is None else f"{s.fitness:.3f}"
+                af = "--" if s.adjusted_fitness is None else f"{s.adjusted_fitness:.3f}"
+                st = self.generation - s.last_improved
+                log(f"  {sid:>4}  {a:>3}  {n:>4}  {f:>9}  {af:>7}  {st:>4}")
+        else:
+            log('Population of {0:d} members in {1:d} species'.format(ng, ns))
+
+        elapsed = time.time() - self.generation_start_time
+        self.generation_times.append(elapsed)
+        self.generation_times = self.generation_times[-10:]
+        average = sum(self.generation_times) / len(self.generation_times)
+        log('Total extinctions: {0:d}'.format(self.num_extinctions))
+        if len(self.generation_times) > 1:
+            log("Generation time: {0:.3f} sec ({1:.3f} average)".format(elapsed, average))
+        else:
+            log("Generation time: {0:.3f} sec".format(elapsed))
+
+    def post_evaluate(self, config, population, species, best_genome):
+        # pylint: disable=no-self-use
+        fitnesses = [c.fitness for c in population.values()]
+        fit_mean = mean(fitnesses)
+        fit_std = stdev(fitnesses)
+        best_species_id = species.get_species_id(best_genome.key)
+        log('Population\'s average fitness: {0:3.5f} stdev: {1:3.5f}'.format(fit_mean, fit_std))
+        log(
+            'Best fitness: {0:3.5f} - size: {1!r} - species {2} - id {3}'.format(best_genome.fitness,
+                                                                                 best_genome.size(),
+                                                                                 best_species_id,
+                                                                                 best_genome.key))
+
+    def complete_extinction(self):
+        self.num_extinctions += 1
+        log('All species extinct.')
+
+    def found_solution(self, config, generation, best):
+        log('\nBest individual in generation {0} meets fitness threshold - complexity: {1!r}'.format(
+            self.generation, best.size()))
+
+    def species_stagnant(self, sid, species):
+        if self.show_species_detail:
+            log("\nSpecies {0} with {1} members is stagnated: removing it".format(sid, len(species.members)))
+
+    def info(self, msg):
+        log(msg)
 
 def run(config_file, datas, fitness_function):
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
@@ -182,9 +258,7 @@ def run(config_file, datas, fitness_function):
                          config_file)
 
     p = neat.Population(config)
-    p.add_reporter(neat.StdOutReporter(True))
-    stats = neat.StatisticsReporter()
-    p.add_reporter(stats)
+    p.add_reporter(CustomReporter(True))
 
     max_generations = 10
     try:
@@ -192,13 +266,16 @@ def run(config_file, datas, fitness_function):
     except neat.population.CompleteExtinctionException:
         winner = stats.best_genome()
 
-    print('\nBest genome:\n{!s}'.format(winner))
+    log('\nBest genome:\n{!s}'.format(winner))
 
     return format(winner)
 
-if __name__ == '__main__':
+def main():
     config = getattr(js, 'config')
     process_config(json.loads(config))
     fitness_function = getattr(js, 'fit_func')
     datas = getattr(js, 'data')
     run('neat_config.ini', datas, fitness_function)
+
+main()
+"Done!"

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>Running...</h2>
+<p id="log">Running...</p>
 <!-- Run Pyodide in separate thread to keep UI responsive -->
 <script type="module" src="{{ url_for('static', filename='js/compute/consumer.js') }}"></script>
 

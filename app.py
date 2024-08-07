@@ -77,6 +77,8 @@ def process_form():
                     extracted_string = parts[1].split("')")[0]
                     response_errors.append(extracted_string)
             return make_response({'errors': response_errors}, 404)
+        if not data_files:
+            return make_response({'errors': ['Please Add Ticker Data']}, 404)
 
         # Parse boolean values correctly
         config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'

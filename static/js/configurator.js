@@ -127,6 +127,11 @@ async function loadData() {
 function submit(event) {
     event.preventDefault();
     var tickerDatas = document.getElementsByClassName('ticker_data');
+    var startText = document.getElementById('startText');
+    var startLoad = document.getElementById('startLoad');
+
+    startText.style.display = 'none';
+    startLoad.style.display = 'block';
 
     const result = Array.from(tickerDatas).map(div => {
         const ticker = div.querySelector('.ticker').innerText;
@@ -163,7 +168,11 @@ function submit(event) {
                 });
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error:', error))
+        .then(() => {
+            startText.style.display = 'block';
+            startLoad.style.display = 'none';
+        });
 };
 
 // Save current input state to its HTML

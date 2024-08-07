@@ -154,6 +154,14 @@ function submit(event) {
             if (response.redirected) {
                 window.location.href = response.url;
             }
+            if (!response.ok) {
+                response.json().then(err => {
+                    let alertBox = document.getElementById('alertBox')
+                    let alert = document.getElementById('alert')
+                    alert.innerText = err.errors.join('\n\n')
+                    alertBox.style.display = 'block'
+                });
+            }
         })
         .catch(error => console.error('Error:', error));
 };

@@ -3,25 +3,19 @@ mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 import os
 import threading
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_file
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_file, make_response
 import json
 import pandas as pd
 import zipfile
 import io
 import yfinance as yf
+import yfinance.shared as shared
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 running_ips = {}
 lock = threading.Lock()
-
-def download_data(data_requests):
-    datas = []
-    for data_request in data_requests:
-        data = yf.download(data_request.get('ticker'), start=data_request.get('start'), end=data_request.get('end'), interval=data_request.get('interval'))
-        datas.append(data.to_csv())
-    return datas
 
 @app.route('/')
 def home():
@@ -35,7 +29,25 @@ def fitness():
 def configurator():
     return render_template('configurator.html')
 
-# Handle incoming message
+def download_data(data_requests):
+    data_files = []
+    errors = []
+    for data_request in data_requests:
+        try:
+            data = yf.download(data_request.get('ticker'), start=data_request.get('start'), end=data_request.get('end'), interval=data_request.get('interval'))
+        except Exception as e:
+            errors.append(e)
+        file_name = ''.join(str(value) for value in data_request.values())
+        if shared._ERRORS:
+            print(next(iter(shared._ERRORS.values())))
+            errors.append(next(iter(shared._ERRORS.values())))
+        print(file_name)
+        data.to_csv(file_name)
+        data_files.append(file_name)
+    print(data_files)
+    return data_files, errors
+
+# Handle form submission
 @app.route('/process-form', methods=['POST'])
 def process_form():
     # Get the client's IP address
@@ -53,6 +65,18 @@ def process_form():
         data_requests = json.loads(request.form['datas'])
         fitness_function = request.form['fitness']
 
+        data_files, errors = download_data(data_requests)
+
+        if errors:
+            for file in data_files:
+                os.remove(file)
+            response_errors = []
+            for e in errors:
+                parts = e.split("('")
+                if len(parts) > 1:
+                    extracted_string = parts[1].split("')")[0]
+                    response_errors.append(extracted_string)
+            return make_response({'errors': response_errors}, 404)
 
         # Parse boolean values correctly
         config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'
@@ -61,7 +85,7 @@ def process_form():
 
         # Store parameters in session
         session['config'] = config
-        session['data_requests'] = data_requests
+        session['data_files'] = data_files
         session['fitness_function'] = fitness_function
 
         # Pass parameters to compute route
@@ -87,22 +111,31 @@ def get_session_data():
         'fitness_function': fitness_function
     })
 
+def create_zip_file(file_list):
+    # Create a BytesIO object to hold the zip file in memory
+    zip_buffer = io.BytesIO()
+
+    # Create a new zip file and write to the BytesIO buffer
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for file in file_list:
+            # Add each file to the zip archive
+            zipf.write(file, arcname=os.path.basename(file))
+            os.remove(file)
+
+    # Move to the beginning of the BytesIO buffer
+    zip_buffer.seek(0)
+
+    return zip_buffer
+
 @app.route('/get-stock-data', methods=['GET'])
 def get_stock_data():
-    data_requests = session.get('data_requests')
-    if not data_requests:
+    data_files = session.get('data_files')
+    if not data_files:
         return jsonify({'error': 'Missing data in session'}), 400
-    
-    stock_data = download_data(data_requests)
 
-    # Create an in-memory ZIP file
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-        for i, csv_data in enumerate(stock_data):
-            filename = f"data{i+1}.csv"
-            zip_file.writestr(filename, csv_data)
+    # Create zip file in memory
+    zip_buffer = create_zip_file(data_files)
 
-    zip_buffer.seek(0)
     # Send the ZIP file
     return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name='data.zip')
 

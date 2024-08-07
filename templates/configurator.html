@@ -183,6 +183,19 @@
         </div>
     </form>
 </div>
+<div id="alertBox" class="hidden fixed top-0 w-screen h-screen bg-[#0000003c]">
+    <div class="flex w-full h-full">
+        <div class="m-auto bg-slate-900 w-3/4 md:w-1/2 p-5 border border-orange-400 rounded">
+            <div class="mb-5 w-full flex justify-center">
+                <h2 class="text-xl">Invalid Ticker Data</h2>
+            </div>
+            <p id="alert"></p>
+            <div class="w-full flex justify-end">
+                <button onclick="document.getElementById('alertBox').style.display = 'none'" class="mt-5">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="output"></div>
 
 {% endblock %}

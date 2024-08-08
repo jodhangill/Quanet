@@ -12,6 +12,38 @@ def log(msg):
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
+def send_genome(genome):
+
+    formatted_connections = []
+    for key, gene in genome.connections.items():
+        formatted_gene = {
+            "to": key[0],
+            "from": key[1],
+            "weight": gene.weight,
+            "enabled": gene.enabled,
+        }
+        formatted_connections.append(formatted_gene)
+
+    formatted_nodes = []
+    for key, gene in genome.nodes.items():
+        formatted_gene = {
+            "id": key,
+            "bias": gene.bias,
+            "response": gene.response,
+            "activation": gene.activation,
+            "aggregation": gene.aggregation,
+        }
+        formatted_nodes.append(formatted_gene)
+
+    result_dict = {"genome": {
+        "key": genome.key,
+        "connections": formatted_connections,
+        "nodes": formatted_nodes,
+        "fitness": genome.fitness,
+    }}
+    result_string = json.dumps(result_dict)
+    js.postMessage(result_string)
+
 def process_config(params):
     config = configparser.ConfigParser()
 
@@ -180,7 +212,6 @@ def eval_genomes(genomes, config, fitness_function, datas):
             except Exception as e:
                 print(f"Error evaluating fitness function: {e}")
                 fitness = float('-inf')
-
             genome.fitness += fitness
 
 class CustomReporter(neat.reporting.BaseReporter):
@@ -225,6 +256,8 @@ class CustomReporter(neat.reporting.BaseReporter):
             log("Generation time: {0:.3f} sec".format(elapsed))
 
     def post_evaluate(self, config, population, species, best_genome):
+        # Send best genome details to JS side
+        send_genome(best_genome)
         # pylint: disable=no-self-use
         fitnesses = [c.fitness for c in population.values()]
         fit_mean = mean(fitnesses)

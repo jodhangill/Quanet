@@ -8,7 +8,7 @@ pyodideWorker.onmessage = (event) => {
         data = JSON.parse(data)
     }
 
-    const {update, results, error} = data
+    const {update, genome, results, error} = data
     let log = document.getElementById("log")
     if (error) {
         console.log(error)
@@ -21,6 +21,9 @@ pyodideWorker.onmessage = (event) => {
     if (results) {
         console.log(results)
         log.innerText += '\n' + results + '\n'        
+    }
+    if (genome) {
+        console.log(genome)
     }
 
 };

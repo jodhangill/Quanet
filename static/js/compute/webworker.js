@@ -22,14 +22,25 @@ self.onmessage = async (event) => {
     }
     // Now is the easy part, the one that is similar to working in the main thread:
     try {
+        // Install packages and update loading bar
+        self.postMessage({loading: 10});
         await self.pyodide.loadPackagesFromImports(python);
+        self.postMessage({loading: 20});
         await self.pyodide.loadPackage("micropip");
+        self.postMessage({loading: 30});
         micropip = pyodide.pyimport("micropip");
-        await micropip.install('neat-python'); 
+        self.postMessage({loading: 40});
+        await micropip.install('neat-python');
+        self.postMessage({loading: 50});
         await micropip.install('backtrader');
+        self.postMessage({loading: 60});
         await micropip.install('pandas'); 
+        self.postMessage({loading: 70});
         await micropip.install('numpy');
+        self.postMessage({loading: 80});
         await micropip.install('graphviz');
+        self.postMessage({loading: 95});
+        self.postMessage({loading: 100});
 
         let results = await self.pyodide.runPythonAsync(python);
         self.postMessage({ results, id });

@@ -151,14 +151,14 @@ def draw_net(config, genome, view=False, filename=None, node_names=None, show_di
     for k in config.genome_config.input_keys:
         inputs.add(k)
         name = node_names.get(k, str(k))
-        input_attrs = {'style': 'rounded', 'shape': 'circle', 'fillcolor': node_colors.get(k, 'transparent'), 'fontcolor': 'white'}
+        input_attrs = {'style': 'striped', 'fontcolor': 'white', 'color': 'white'}
         dot.node(name, _attributes=input_attrs)
 
     outputs = set()
     for k in config.genome_config.output_keys:
         outputs.add(k)
         name = node_names.get(k, str(k))
-        node_attrs = {'style': 'filled', 'fillcolor': node_colors.get(k, 'transparent')}
+        node_attrs = {'style': 'striped', 'fontcolor': 'white', 'color': 'white'}
 
         dot.node(name, _attributes=node_attrs)
 
@@ -167,8 +167,7 @@ def draw_net(config, genome, view=False, filename=None, node_names=None, show_di
         if n in inputs or n in outputs:
             continue
 
-        attrs = {'style': 'filled',
-                 'fillcolor': node_colors.get(n, 'black')}
+        attrs = {'style': 'striped', 'fontcolor': 'white', 'color': 'white'}
         dot.node(str(n), _attributes=attrs)
 
     for cg in genome.connections.values():
@@ -180,7 +179,7 @@ def draw_net(config, genome, view=False, filename=None, node_names=None, show_di
             b = node_names.get(output, str(output))
             style = 'solid' if cg.enabled else 'dotted'
             color = 'green' if cg.weight > 0 else 'red'
-            width = str(0.1 + abs(cg.weight / 5.0))
+            width = str(0.1 + abs(cg.weight / 2.0))
             dot.edge(a, b, _attributes={'style': style, 'color': color, 'penwidth': width})
 
     return dot
@@ -440,6 +439,7 @@ class CustomReporter(neat.reporting.BaseReporter):
     def post_evaluate(self, config, population, species, best_genome):
         # Send best genome details to JS side
         send_genome(best_genome)
+        send_dot(draw_net(config, best_genome, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -5: "ADD", -4: "ADF"}))
         # pylint: disable=no-self-use
         fitnesses = [c.fitness for c in population.values()]
         fit_mean = mean(fitnesses)
@@ -477,7 +477,7 @@ def run(config_file, datas, fitness_function):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    max_generations = 2
+    max_generations = 5
     try:
         winner = p.run(lambda genomes, config: eval_genomes(genomes, config, fitness_function, datas), max_generations)
     except neat.population.CompleteExtinctionException:
@@ -485,16 +485,20 @@ def run(config_file, datas, fitness_function):
 
     log('\nBest genome:\n{!s}'.format(winner))
 
-    send_dot(draw_net(config, winner, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -4: "RSI", -5: "Volume"}))
+    send_dot(draw_net(config, winner, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -5: "RSI", -4: "Volume"}))
     return format(winner)
 
 def main():
-    log("Running...")
-    log("Please do not close this window.")
+    result_dict = {"loading": -1}
+    result_string = json.dumps(result_dict)
+    js.postMessage(result_string)
+
     config = getattr(js, 'config')
     process_config(json.loads(config))
+
     fitness_function = getattr(js, 'fit_func')
     datas = getattr(js, 'data')
+
     run('neat_config.ini', datas, fitness_function)
 
 main()

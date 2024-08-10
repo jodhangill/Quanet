@@ -4,14 +4,31 @@ const pyodideWorker = new Worker("static/js/compute/webworker.js");
 
 const callbacks = {};
 
+function updateProgressBar(progress) {
+    let bar = document.getElementById('loadingProgress');
+    if (progress == 100) {
+        bar.style.transitionDuration = '5000ms';
+    }
+    else if (progress < 0) {
+        document.getElementById('loadingContainer').style.display = 'none';
+    }
+    else {
+        bar.style.transitionDuration = '1000ms';
+    }
+    bar.style.width = progress + '%';
+}
+
 pyodideWorker.onmessage = (event) => {
     let data = event.data
     if (typeof data === 'string') {
         data = JSON.parse(data)
     }
 
-    const {update, genome, dot, results, error} = data
+    const {update, genome, dot, results, loading, error} = data
     let log = document.getElementById("log")
+    if (loading) {
+        updateProgressBar(loading)
+    }
     if (error) {
         console.log(error)
         log.innerText += '\n' + error + '\n'

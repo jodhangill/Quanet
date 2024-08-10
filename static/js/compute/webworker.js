@@ -29,6 +29,8 @@ self.onmessage = async (event) => {
         await micropip.install('backtrader');
         await micropip.install('pandas'); 
         await micropip.install('numpy');
+        await micropip.install('graphviz');
+
         let results = await self.pyodide.runPythonAsync(python);
         self.postMessage({ results, id });
     } catch (error) {

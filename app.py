@@ -2,7 +2,6 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 import os
-import threading
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_file, make_response
 import json
 import pandas as pd
@@ -13,9 +12,6 @@ import yfinance.shared as shared
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
-
-running_ips = {}
-lock = threading.Lock()
 
 @app.route('/')
 def home():
@@ -50,51 +46,37 @@ def download_data(data_requests):
 # Handle form submission
 @app.route('/process-form', methods=['POST'])
 def process_form():
-    # Get the client's IP address
-    client_ip = request.remote_addr
-    print(client_ip)
 
-    # Limit to one instance per IP
-    with lock:
-        if running_ips.get(client_ip, False):
-            return jsonify({'message': 'Already running'}), 429
-        running_ips[client_ip] = True
+    config = request.form.to_dict()
+    data_requests = json.loads(request.form['datas'])
+    fitness_function = request.form['fitness']
 
-    try:
-        config = request.form.to_dict()
-        data_requests = json.loads(request.form['datas'])
-        fitness_function = request.form['fitness']
+    data_files, errors = download_data(data_requests)
+    if errors:
+        for file in data_files:
+            os.remove(file)
+        response_errors = []
+        for e in errors:
+            parts = e.split("('")
+            if len(parts) > 1:
+                extracted_string = parts[1].split("')")[0]
+                response_errors.append(extracted_string)
+        return make_response({'errors': response_errors}, 404)
+    if not data_files:
+        return make_response({'errors': ['Please Add Ticker Data']}, 404)
+    
+    # Parse boolean values correctly
+    config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'
+    config['enabled_default'] = config.get('enabled_default') == 'on'
+    config['feed_forward'] = config.get('feed_forward') == 'on'
 
-        data_files, errors = download_data(data_requests)
+    # Store parameters in session
+    session['config'] = config
+    session['data_files'] = data_files
+    session['fitness_function'] = fitness_function
 
-        if errors:
-            for file in data_files:
-                os.remove(file)
-            response_errors = []
-            for e in errors:
-                parts = e.split("('")
-                if len(parts) > 1:
-                    extracted_string = parts[1].split("')")[0]
-                    response_errors.append(extracted_string)
-            return make_response({'errors': response_errors}, 404)
-        if not data_files:
-            return make_response({'errors': ['Please Add Ticker Data']}, 404)
-
-        # Parse boolean values correctly
-        config['reset_on_extinction'] = config.get('reset_on_extinction') == 'on'
-        config['enabled_default'] = config.get('enabled_default') == 'on'
-        config['feed_forward'] = config.get('feed_forward') == 'on'
-
-        # Store parameters in session
-        session['config'] = config
-        session['data_files'] = data_files
-        session['fitness_function'] = fitness_function
-
-        # Pass parameters to compute route
-        return redirect(url_for('compute'))
-    finally:
-        with lock:
-            running_ips[client_ip] = False
+    # Pass parameters to compute route
+    return redirect(url_for('compute'))
 
 @app.route('/compute')
 def compute():

@@ -18,13 +18,117 @@ function updateProgressBar(progress) {
     bar.style.width = progress + '%';
 }
 
+function drawDot(dotString) {
+    if (typeof Viz !== 'undefined') {
+        try {
+            // Initialize Viz.js
+            const viz = new Viz();
+            
+            // Render the Dot string to SVG
+            viz.renderSVGElement(dotString)
+                .then(function(element) {
+                    element.style.maxWidth = '100%'
+                    const container = document.getElementById('net-container');
+                    // Append the rendered SVG to the container
+                    container.innerHTML = '';
+                    container.appendChild(element);
+                })
+                .catch(error => {
+                    console.error('Error rendering the graph:', error);
+                });
+        } catch (error) {
+            console.error('Error initializing Viz.js:', error);
+        }
+    } else {
+        console.error('Viz.js is not available.');
+    }
+}
+
+function plot_graphs(graphs) {
+    console.log(graphs)
+
+    for (let i = 0; i < graphs.length; i++) {
+        let graph = graphs[i]
+
+        let dates = graph.dates;
+        let equities = graph.equity;
+        let id = graph.id;
+
+        console.log(graph)
+
+        // Convert date strings to JavaScript Date objects
+        const formattedDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
+        // Create the chart
+        let chart = document.createElement('canvas')
+        chart.id = `equityChart${id}`
+
+        document.getElementById('charts').appendChild(chart)
+
+        const ctx = chart.getContext('2d');
+        const equityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: formattedDates,
+                datasets: [{
+                    label: 'Equity',
+                    data: equities,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Equity'
+                        }
+                    }
+                }
+            }
+        });        
+    }
+
+}
+
 pyodideWorker.onmessage = (event) => {
     let data = event.data
     if (typeof data === 'string') {
         data = JSON.parse(data)
     }
 
-    const {update, genome, dot, results, loading, error} = data
+    const {update, genome, results, loading, error} = data
     let log = document.getElementById("log")
     if (loading) {
         updateProgressBar(loading)
@@ -42,29 +146,9 @@ pyodideWorker.onmessage = (event) => {
         log.innerText += '\n' + results + '\n'        
     }
     if (genome) {
-        console.log(genome)
-    }
-    if (dot) {
-        if (typeof Viz !== 'undefined') {
-            try {
-                // Initialize Viz.js
-                const viz = new Viz();
-                
-                // Render the Dot string to SVG
-                viz.renderSVGElement(dot)
-                    .then(function(element) {
-                        // Append the rendered SVG to the container
-                        document.getElementById('graph-container').appendChild(element);
-                    })
-                    .catch(error => {
-                        console.error('Error rendering the graph:', error);
-                    });
-            } catch (error) {
-                console.error('Error initializing Viz.js:', error);
-            }
-        } else {
-            console.error('Viz.js is not available.');
-        }
+        console.log(genome);
+        drawDot(genome.dot);
+        plot_graphs(genome.graphs);
     }
 };
 

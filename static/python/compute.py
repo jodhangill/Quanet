@@ -1,5 +1,6 @@
 import neat
 import backtrader as bt
+import pandas as pd
 import numpy as np
 import configparser
 import json
@@ -189,7 +190,7 @@ def log(msg):
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
-def send_genome(genome):
+def send_genome(genome, config):
     formatted_connections = []
     for key, gene in genome.connections.items():
         formatted_gene = {
@@ -211,17 +212,19 @@ def send_genome(genome):
         }
         formatted_nodes.append(formatted_gene)
 
+    # Draw neural network in dot format
+    dot = draw_net(config, genome, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -4: "RSI", -5: "Volume"})
+
+    print(genome.results)
     result_dict = {"genome": {
         "key": genome.key,
         "connections": formatted_connections,
         "nodes": formatted_nodes,
         "fitness": genome.fitness,
+        "dot": dot.source,
+        "graphs": genome.results,
     }}
-    result_string = json.dumps(result_dict)
-    js.postMessage(result_string)
 
-def send_dot(dot):
-    result_dict = {"dot": dot.source}
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
@@ -306,6 +309,9 @@ class NeatStrategy(bt.Strategy):
     params = (('neat_net', None),)  # Neural network created from genome
 
     def __init__(self):
+        self.equity = []
+        self.dates = []
+
         self.buys = 0
         self.sells = 0
 
@@ -357,10 +363,14 @@ class NeatStrategy(bt.Strategy):
                 self.sells += 1
                 self.sell(size=position.size)
 
+        self.equity.append(self.broker.getvalue())
+        self.dates.append(self.datas[0].datetime.date(0).strftime('%Y-%m-%d'))
+
 def eval_genomes(genomes, config, fitness_function, datas):
     for genome_id, genome in genomes:
+        results = []
         genome.fitness = 0
-        for data in datas:
+        for i, data in enumerate(datas):
             cerebro = bt.Cerebro()
             net = neat.nn.FeedForwardNetwork.create(genome, config)
             cerebro.addstrategy(NeatStrategy, neat_net=net)
@@ -393,7 +403,21 @@ def eval_genomes(genomes, config, fitness_function, datas):
             except Exception as e:
                 print(f"Error evaluating fitness function: {e}")
                 fitness = float('-inf')
+
+            result = {
+                'data_id': i,
+                'equity': strategy.equity,
+                'dates': strategy.dates,
+                'sr': sharpe_ratio,
+                'md': max_drawdown,
+                'tcr': total_compound_returns,
+                'sqn': sqn,
+                'fitness': fitness
+            }
+            results.append(result)
+
             genome.fitness += fitness
+        genome.results = results
 
 class CustomReporter(neat.reporting.BaseReporter):
     def __init__(self, show_species_detail):
@@ -438,8 +462,7 @@ class CustomReporter(neat.reporting.BaseReporter):
 
     def post_evaluate(self, config, population, species, best_genome):
         # Send best genome details to JS side
-        send_genome(best_genome)
-        send_dot(draw_net(config, best_genome, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -5: "ADD", -4: "ADF"}))
+        send_genome(best_genome, config)
         # pylint: disable=no-self-use
         fitnesses = [c.fitness for c in population.values()]
         fit_mean = mean(fitnesses)
@@ -477,6 +500,8 @@ def run(config_file, datas, fitness_function):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
+    first_genome_id, first_genome = next(iter(p.population.items()))
+
     max_generations = 5
     try:
         winner = p.run(lambda genomes, config: eval_genomes(genomes, config, fitness_function, datas), max_generations)
@@ -485,7 +510,6 @@ def run(config_file, datas, fitness_function):
 
     log('\nBest genome:\n{!s}'.format(winner))
 
-    send_dot(draw_net(config, winner, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -5: "RSI", -4: "Volume"}))
     return format(winner)
 
 def main():
@@ -502,4 +526,5 @@ def main():
     run('neat_config.ini', datas, fitness_function)
 
 main()
+
 "Done!"

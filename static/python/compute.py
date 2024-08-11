@@ -11,6 +11,7 @@ import warnings
 import graphviz
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 
 # From neat-python/examples/xor/visualize.py
@@ -215,6 +216,7 @@ def send_genome(genome, config):
     # Draw neural network in dot format
     dot = draw_net(config, genome, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -4: "RSI", -5: "Volume"})
 
+    print(len(genome.results))
     print(genome.results)
     result_dict = {"genome": {
         "key": genome.key,
@@ -392,17 +394,17 @@ def eval_genomes(genomes, config, fitness_function, datas):
             strategy = strategies[0]
 
             # Retrieve analyzer results
-            sharpe_ratio = strategy.analyzers.sharpe.get_analysis().get('sharperatio', float('-inf'))
-            max_drawdown = strategy.analyzers.drawdown.get_analysis().get('max', {}).get('drawdown', float('-inf'))
-            total_compound_returns = strategy.analyzers.returns.get_analysis().get('rtot', float('-inf'))
-            sqn = strategy.analyzers.sqn.get_analysis().get('sqn', float('-inf'))
+            sharpe_ratio = strategy.analyzers.sharpe.get_analysis().get('sharperatio')
+            max_drawdown = strategy.analyzers.drawdown.get_analysis().get('max', {}).get('drawdown')
+            total_compound_returns = strategy.analyzers.returns.get_analysis().get('rtot')
+            sqn = strategy.analyzers.sqn.get_analysis().get('sqn')
 
             # Calculate fitness with error handling
             try:
-                fitness = eval(fitness_function) or float('-inf')
+                fitness = eval(fitness_function) or sys.float_info.min
             except Exception as e:
                 print(f"Error evaluating fitness function: {e}")
-                fitness = float('-inf')
+                fitness = sys.float_info.min
 
             result = {
                 'data_id': i,

@@ -9,6 +9,8 @@ import zipfile
 import io
 import yfinance as yf
 import yfinance.shared as shared
+from datetime import datetime, timedelta
+import dateutil.relativedelta as rd
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -25,20 +27,76 @@ def fitness():
 def configurator():
     return render_template('configurator.html')
 
+def split_interval(interval):
+    letters = ''
+    numbers = ''
+    for char in interval:
+        if char.isalpha():
+            letters += char
+        elif char.isdigit():
+            numbers += char
+    return letters, numbers
+
+def subtract_from_date(date_string, interval):
+    date = datetime.strptime(date_string, '%Y-%m-%d')
+    unit, quantity = split_interval(interval)
+    print(quantity)
+
+    # Subtract for at least 27 extra data points, accounting for an assumed a max of 3 consecutive days without any data
+    if unit == 'd':
+        return date - timedelta(days=(48*int(quantity)))
+    elif unit == 'wk':
+        return date - timedelta(weeks=(30*int(quantity)))
+    elif unit == 'mo':
+        return date - rd.relativedelta(months=(30*int(quantity)))
+    elif unit == 'h':
+        return date - timedelta(hours=(150*int(quantity)))
+    elif unit == 'm':
+        print(date - timedelta(minutes=(5000*int(quantity))))
+        return date - timedelta(minutes=(5000*int(quantity)))
+    else:
+        print(unit)
+        raise ValueError("Unsupported unit of time.")
+
+
+def trim_data(df, reference_date_str, previous_rows=27):
+    reference_date = pd.to_datetime(reference_date_str).tz_localize(df.index.tz)
+    match_index = (df.index >= reference_date).argmax()
+    start_index = max(0, match_index - previous_rows)
+
+    filtered_df = df.iloc[start_index:]
+
+    return filtered_df
+
 def download_data(data_requests):
     data_files = []
     errors = []
     for data_request in data_requests:
+        ticker = data_request.get('ticker')
+        start = data_request.get('start')
+        end = end=data_request.get('end')
+        interval = data_request.get('interval')
+
+        adjusted_start = subtract_from_date(start, interval)
+
         try:
-            data = yf.download(data_request.get('ticker'), start=data_request.get('start'), end=data_request.get('end'), interval=data_request.get('interval'))
+            data = yf.download(ticker, start=adjusted_start, end=end, interval=interval)
         except Exception as e:
             errors.append(e)
-        file_name = ''.join(str(value) for value in data_request.values())
+        data_length = len(data) - 1
+
         if shared._ERRORS:
             print(next(iter(shared._ERRORS.values())))
             errors.append(next(iter(shared._ERRORS.values())))
+        elif data_length < 28:
+            print(data_length)
+            errors.append(f"('${data_request.get('ticker')}: Only contains {data_length} data points. At least 28 data points required for initial computation')")
+
+        trimmed_data = trim_data(data, start)
+        file_name = ''.join(str(value) for value in data_request.values())
         print(file_name)
-        data.to_csv(file_name)
+        trimmed_data.to_csv(file_name)
+
         data_files.append(file_name)
     print(data_files)
     return data_files, errors

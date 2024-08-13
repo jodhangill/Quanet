@@ -118,9 +118,12 @@ async function loadData() {
     }
 
     var displayHTML = localStorage.getItem('displayHTML');
+    const fitness = document.getElementById('fitness');
     if (displayHTML) {
-        const fitness = document.getElementById('fitness');
         fitness.innerHTML = displayHTML;
+    }
+    else {
+        fitness.innerHTML = '<a href="/fitness"><span style="font-size: medium; opacity: 80%">Please add your fitness function</a>';
     }
 }
 
@@ -192,6 +195,29 @@ function saveInput(event) {
                 element.setAttribute('value', element.value);
             }
         } 
+    }
+}
+
+function showAdvanced() {
+    document.getElementById('advanced').style.display = 'block';
+    document.getElementsByClassName('hideButton')[0].style.display = 'block';
+    document.getElementsByClassName('hideButton')[1].style.display = 'block';
+    document.getElementById('showButton').style.display = 'none';
+    document.getElementById('jumpTo').style.display = 'block';
+}
+
+function hideAdvanced() {
+    document.getElementById('advanced').style.display = 'none';
+    document.getElementsByClassName('hideButton')[0].style.display = 'none';
+    document.getElementsByClassName('hideButton')[1].style.display = 'none';
+    document.getElementById('showButton').style.display = 'block';
+    document.getElementById('jumpTo').style.display = 'none';
+}
+
+function restoreSettings() {
+    if (confirm("Are you sure you want to restore all settings?") == true) {
+        localStorage.clear();
+        location.reload();
     }
 }
 

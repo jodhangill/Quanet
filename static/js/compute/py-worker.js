@@ -7,7 +7,7 @@ const callbacks = {};
 function updateProgressBar(progress) {
     let bar = document.getElementById('loadingProgress');
     if (progress == 100) {
-        bar.style.transitionDuration = '5000ms';
+        bar.style.transitionDuration = '7000ms';
     }
     else if (progress < 0) {
         document.getElementById('loadingContainer').style.display = 'none';

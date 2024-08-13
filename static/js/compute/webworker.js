@@ -37,9 +37,8 @@ self.onmessage = async (event) => {
         await micropip.install('pandas'); 
         self.postMessage({loading: 70});
         await micropip.install('numpy');
-        self.postMessage({loading: 80});
-        await micropip.install('graphviz');
         self.postMessage({loading: 95});
+        await micropip.install('graphviz');
         self.postMessage({loading: 100});
 
         let results = await self.pyodide.runPythonAsync(python);

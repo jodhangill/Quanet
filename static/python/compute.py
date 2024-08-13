@@ -263,10 +263,10 @@ def process_config(params):
         'enabled_default': str(params.get('enabled_default', True)),
         'enabled_mutate_rate': params.get('enabled_mutate_rate', '0.01'),
         'feed_forward': str(params.get('feed_forward', True)),
-        'initial_connection': params.get('initial_connection', 'full'),
+        'initial_connection': params.get('initial_connection', 'full_nodirect'),
         'node_add_prob': params.get('node_add_prob', '0.2'),
         'node_delete_prob': params.get('node_delete_prob', '0.2'),
-        'num_hidden': params.get('num_hidden', '0'),
+        'num_hidden': params.get('num_hidden', '3'),
         'num_inputs': params.get('num_inputs', '5'),
         'num_outputs': params.get('num_outputs', '1'),
         'response_init_mean': params.get('response_init_mean', '1.0'),
@@ -303,9 +303,13 @@ def process_config(params):
         'survival_threshold': params.get('survival_threshold', '0.2')
     }
     
+    file_name = 'neat_config.ini'
+
     # Write the parsed config to file
-    with open('neat_config.ini', 'w') as configfile:
+    with open(file_name, 'w') as configfile:
         config.write(configfile)
+    
+    return file_name
 
 class NeatStrategy(bt.Strategy):
     params = (('neat_net', None),)  # Neural network created from genome
@@ -492,7 +496,10 @@ class CustomReporter(neat.reporting.BaseReporter):
     def info(self, msg):
         log(msg)
 
-def run(config_file, datas, fitness_function):
+def run(config_params, datas, fitness_function):
+
+    config_file = process_config(config_params)
+
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)
@@ -504,7 +511,7 @@ def run(config_file, datas, fitness_function):
 
     first_genome_id, first_genome = next(iter(p.population.items()))
 
-    max_generations = 5
+    max_generations = int(config_params.get('max_generations', 5))
     try:
         winner = p.run(lambda genomes, config: eval_genomes(genomes, config, fitness_function, datas), max_generations)
     except neat.population.CompleteExtinctionException:
@@ -520,12 +527,11 @@ def main():
     js.postMessage(result_string)
 
     config = getattr(js, 'config')
-    process_config(json.loads(config))
 
     fitness_function = getattr(js, 'fit_func')
     datas = getattr(js, 'data')
 
-    run('neat_config.ini', datas, fitness_function)
+    run(json.loads(config), datas, fitness_function)
 
 main()
 

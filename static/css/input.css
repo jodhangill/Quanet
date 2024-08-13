@@ -53,12 +53,16 @@ a {
 }
 
 #neatForm .input-container label {
-    @apply block text-white text-base font-bold mb-2;
+    @apply block text-white text-base mb-2;
 }
 
 #neatForm .input-container input:not([type="checkbox"]),
 #neatForm .input-container select {
     @apply shadow hover:bg-gray-700 bg-gray-900 border-white border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none;
+}
+
+#neatForm h2 {
+    @apply font-semibold text-xl mt-8 mb-4
 }
 
 .ticker_data_container {
@@ -83,7 +87,7 @@ a {
             rgba(0, 0, 0, 0.9) 100%);
 }
 
-#neatForm>* {
+#neatForm>*:not([id="advanced"]), #advanced>* {
     animation: fadeInUp;
     animation-duration: 0.5s;
 }

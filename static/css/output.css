@@ -664,6 +664,11 @@ video {
   margin-bottom: 1.25rem;
 }
 
+.my-10 {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -692,16 +697,20 @@ video {
   margin-right: 0.25rem;
 }
 
+.mt-0 {
+  margin-top: 0px;
+}
+
 .mt-20 {
   margin-top: 5rem;
 }
 
-.mt-4 {
-  margin-top: 1rem;
-}
-
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .block {
@@ -734,10 +743,6 @@ video {
 
 .h-2 {
   height: 0.5rem;
-}
-
-.h-3 {
-  height: 0.75rem;
 }
 
 .h-5 {
@@ -869,10 +874,6 @@ video {
 
 .justify-around {
   justify-content: space-around;
-}
-
-.self-end {
-  align-self: flex-end;
 }
 
 .overflow-auto {
@@ -1137,6 +1138,10 @@ video {
   text-align: start;
 }
 
+.align-bottom {
+  vertical-align: bottom;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1317,7 +1322,6 @@ a:hover {
   display: block;
   font-size: 1rem;
   line-height: 1.5rem;
-  font-weight: 700;
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
@@ -1353,6 +1357,14 @@ a:hover {
 #neatForm .input-container select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+#neatForm h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
 }
 
 .ticker_data_container {
@@ -1404,7 +1416,7 @@ a:hover {
             rgba(0, 0, 0, 0.9) 100%);
 }
 
-#neatForm>* {
+#neatForm>*:not([id="advanced"]), #advanced>* {
   animation: fadeInUp;
   animation-duration: 0.5s;
 }

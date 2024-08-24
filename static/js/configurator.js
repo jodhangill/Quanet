@@ -1,6 +1,13 @@
 function saveAll() {
     var form = document.getElementById('neatForm');
     localStorage.setItem('formHTML', form.innerHTML);
+
+    let tickers = [];
+    let tickerSpans = document.getElementsByClassName('ticker');
+    for (let i = 0; i < tickerSpans.length; i++) {
+        tickers[i] = tickerSpans[i].innerText
+    }
+    localStorage.setItem('tickers', JSON.stringify(tickers));
 }
 
 function removeData(event, button) {

@@ -2,17 +2,24 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" integrity="sha512-vnRdmX8ZxbU+IhA2gLhZqXkX1neJISG10xy0iP0WauuClu3AIMknxyDjYHEpEhi8fTZPyOCWgqUCnEafDB/jVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" integrity="sha512-1zKK2bG3QY2JaUPpfHZDUMe3dwBwFdCDwXQ01GrKSd+/l0hqPbF+aak66zYPUZtn+o2JYi1mjXAqy5mW04v3iA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+    integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"
+    integrity="sha512-vnRdmX8ZxbU+IhA2gLhZqXkX1neJISG10xy0iP0WauuClu3AIMknxyDjYHEpEhi8fTZPyOCWgqUCnEafDB/jVQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"
+    integrity="sha512-1zKK2bG3QY2JaUPpfHZDUMe3dwBwFdCDwXQ01GrKSd+/l0hqPbF+aak66zYPUZtn+o2JYi1mjXAqy5mW04v3iA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="w-full border p-10 border-white mt-20 min-h-[calc(100vh-80px)] md:max-h-[calc(100vh-80px)]">
     <div id="loadingContainer" class="text-center">
-        <h2 class="text-xl">Loading...</h2>
+        <h2 id="loadingText" class="text-xl">Loading...</h2>
         <div class="flex w-full justify-center">
             <div id="loadingBar" class="w-2/3 h-2 m-4 bg-slate-700">
                 <div id="loadingProgress" class="h-2 bg-white duration-1000 ease-in-out w-px"></div>
@@ -21,17 +28,198 @@
     </div>
     <p id="log">Log:</p>
     <div id="net-container"></div>
-    <div id="charts">
-
-    </div> 
+    <div id="carousel" class="flex">
+        <button onclick="prev()">-</button>
+        <div id="charts">
+            <div id="1" style="display: block;">
+                <canvas id="priceChart0" height="877" width="1755"
+                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
+                </canvas>
+                <canvas
+                    id="equityChart0" height="877" width="1755"
+                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
+                </canvas>
+            </div>
+            <div id="2" style="display: none;">
+                <canvas id="priceChart1" height="877" width="1755"
+                    style="display: block; box-sizing: border-box; height: 602px; width: 1404px;">
+                </canvas>
+                <canvas id="equityChart1" height="877" width="1755"
+                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
+                </canvas>
+            </div>
+            <div id="3" style="display: none;">
+                <canvas id="priceChart2" height="877" width="1755"
+                    style="display: block; box-sizing: border-box; height: 802px; width: 1404px;">
+                </canvas>
+                <canvas id="equityChart2" height="877" width="1755"
+                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
+                </canvas>
+            </div>
+        </div>
+        <button onclick="next()">-</button>
+    </div>
 </div>
 
-<div class="carousel">
+<script>
+    let ci = 1
+    function next() {
+        document.getElementById(ci).style.display = 'none';
+        document.getElementById(ci+1).style.display = 'block';
+        ci++;
+        // Example data
+        const priceData = [10, 20, 30, 40, 50];
+        const equityData = [15, 25, 35, 45, 55];
+    
+        // Create the price charts
+        const priceCharts = [
+            'priceChart0',
+            'priceChart1',
+            'priceChart2'
+        ];
+    
+        priceCharts.forEach(chartId => {
+            new Chart(document.getElementById(chartId), {
+                type: 'line', // Choose the type of chart (line, bar, etc.)
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
+                    datasets: [{
+                        label: 'Price',
+                        data: priceData,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    
+        // Create the equity charts
+        const equityCharts = [
+            'equityChart0',
+            'equityChart1',
+            'equityChart2'
+        ];
+    
+        equityCharts.forEach(chartId => {
+            new Chart(document.getElementById(chartId), {
+                type: 'bar', // Choose the type of chart (line, bar, etc.)
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
+                    datasets: [{
+                        label: 'Equity',
+                        data: equityData,
+                        backgroundColor: 'green',
+                        borderColor: 'darkgreen',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+        
+    }
 
-</div>
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     // Example data
+    //     const priceData = [10, 20, 30, 40, 50];
+    //     const equityData = [15, 25, 35, 45, 55];
+    
+    //     // Create the price charts
+    //     const priceCharts = [
+    //         'priceChart0',
+    //         'priceChart1',
+    //         'priceChart2'
+    //     ];
+    
+    //     priceCharts.forEach(chartId => {
+    //         new Chart(document.getElementById(chartId), {
+    //             type: 'line', // Choose the type of chart (line, bar, etc.)
+    //             data: {
+    //                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
+    //                 datasets: [{
+    //                     label: 'Price',
+    //                     data: priceData,
+    //                     borderColor: 'blue',
+    //                     backgroundColor: 'rgba(0, 0, 255, 0.2)',
+    //                     borderWidth: 1
+    //                 }]
+    //             },
+    //             options: {
+    //                 responsive: true,
+    //                 scales: {
+    //                     x: {
+    //                         beginAtZero: true
+    //                     },
+    //                     y: {
+    //                         beginAtZero: true
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     });
+    
+    //     // Create the equity charts
+    //     const equityCharts = [
+    //         'equityChart0',
+    //         'equityChart1',
+    //         'equityChart2'
+    //     ];
+    
+    //     equityCharts.forEach(chartId => {
+    //         new Chart(document.getElementById(chartId), {
+    //             type: 'bar', // Choose the type of chart (line, bar, etc.)
+    //             data: {
+    //                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
+    //                 datasets: [{
+    //                     label: 'Equity',
+    //                     data: equityData,
+    //                     backgroundColor: 'green',
+    //                     borderColor: 'darkgreen',
+    //                     borderWidth: 1
+    //                 }]
+    //             },
+    //             options: {
+    //                 responsive: true,
+    //                 scales: {
+    //                     x: {
+    //                         beginAtZero: true
+    //                     },
+    //                     y: {
+    //                         beginAtZero: true
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     });
+    // });
+    
+    
+    </script>
+    
+
 
 <!-- Run Pyodide in separate thread to keep UI responsive -->
-<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
-<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
-<script type="module" src="{{ url_for('static', filename='js/compute/consumer.js') }}"></script>
+
 {% endblock %}

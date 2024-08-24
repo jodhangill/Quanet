@@ -91,13 +91,12 @@ def download_data(data_requests):
         elif data_length < 28:
             print(data_length)
             errors.append(f"('${data_request.get('ticker')}: Only contains {data_length} data points. At least 28 data points required for initial computation')")
-
-        trimmed_data = trim_data(data, start)
-        file_name = ''.join(str(value) for value in data_request.values())
-        print(file_name)
-        trimmed_data.to_csv(file_name)
-
-        data_files.append(file_name)
+        else:
+            trimmed_data = trim_data(data, start)
+            file_name = ''.join(str(value) for value in data_request.values())
+            print(file_name)
+            trimmed_data.to_csv(file_name)
+            data_files.append(file_name)
     print(data_files)
     return data_files, errors
 

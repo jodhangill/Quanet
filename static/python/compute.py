@@ -227,6 +227,8 @@ def send_genome(genome, config):
         "graphs": genome.results,
     }}
 
+    print(genome.results[0].get('cash'))
+
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
@@ -317,9 +319,9 @@ class NeatStrategy(bt.Strategy):
     def __init__(self):
         self.equity = []
         self.dates = []
-
-        self.buys = 0
-        self.sells = 0
+        self.orderSequence = []
+        self.cash = []
+        self.prices = []
 
         # Define indicators
         self.sma = bt.indicators.MovingAverageSimple(self.datas[0], period=15)
@@ -361,16 +363,20 @@ class NeatStrategy(bt.Strategy):
             size = int(available_cash * 0.10 / self.data.close[0])
 
             if size >= 1:
-                self.buys += 1
                 self.buy(size=size)
+                self.orderSequence.append('buy')
         else:
             position = self.getposition()
             if position.size > 0:
-                self.sells += 1
                 self.sell(size=position.size)
+                self.orderSequence.append('sell')
+            else:
+                self.orderSequence.append('hold')
 
-        self.equity.append(self.broker.getvalue())
+        self.equity.append(self.broker.get_value())
+        self.cash.append(self.broker.get_cash())
         self.dates.append(self.datas[0].datetime.date(0).strftime('%Y-%m-%d'))
+        self.prices.append(self.data.close[0])
 
 def eval_genomes(genomes, config, fitness_function, datas):
     for genome_id, genome in genomes:
@@ -413,7 +419,10 @@ def eval_genomes(genomes, config, fitness_function, datas):
             result = {
                 'data_id': i,
                 'equity': strategy.equity,
+                'cash': strategy.cash,
                 'dates': strategy.dates,
+                'orderSequence': strategy.orderSequence,
+                'prices': strategy.prices,
                 'sr': sharpe_ratio,
                 'md': max_drawdown,
                 'tcr': total_compound_returns,

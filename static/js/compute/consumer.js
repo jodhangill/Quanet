@@ -49,7 +49,7 @@ async function main() {
     const script = await pyFile.text();
 
     const session_data = await fetchSessionData();
-    const data = await fetchStockData()
+    const data = await fetchStockData();
 
     const context = {
         config: JSON.stringify(session_data.config),

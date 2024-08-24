@@ -8,6 +8,7 @@ function updateProgressBar(progress) {
     let bar = document.getElementById('loadingProgress');
     if (progress == 100) {
         bar.style.transitionDuration = '7000ms';
+        document.getElementById('loadingText').innerHTML = 'Finalizing...'
     }
     else if (progress < 0) {
         document.getElementById('loadingContainer').style.display = 'none';
@@ -45,36 +46,107 @@ function drawDot(dotString) {
 }
 
 function plot_graphs(graphs) {
-    console.log(graphs)
+    let tickers = JSON.parse(localStorage.getItem('tickers'));
+    let chartList = document.getElementById('charts');
 
     for (let i = 0; i < graphs.length; i++) {
         let graph = graphs[i]
 
         let dates = graph.dates;
-        let equities = graph.equity;
-        let id = graph.id;
+        let equity = graph.equity;
+        let id = graph.data_id;
+        let prices = graph.prices;
 
-        console.log(graph)
+        // Map point colors on graph to type of order (buy/sell/hold)
+        let pointColors = graph.orderSequence.map(value => {
+            if (value === 'buy') return 'rgba(0,255,0,1)';
+            if (value === 'sell') return 'rgba(255,0,0,1)';
+            return 'rgba(0,0,0,0)';
+        });
+        let pointRadius = graph.orderSequence.map(value => {
+            return value === 'hold' ? 0 : 2 + (9/graph.orderSequence.length);
+        });
 
         // Convert date strings to JavaScript Date objects
         const formattedDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
+
+        let charts = document.createElement('div')
+
         // Create the chart
-        let chart = document.createElement('canvas')
-        chart.id = `equityChart${id}`
+        let priceChart = document.createElement('canvas')
+        priceChart.id = `priceChart${id}`
+        charts.appendChild(priceChart)
+        new Chart(priceChart, {
+            type: 'line',
+            data: {
+                labels: formattedDates,
+                datasets: [{
+                    label: 'Share Price',
+                    data: prices,
+                    borderColor: 'rgba(200,225,255,0.8)',
+                    borderWidth: 1,
+                    pointBorderColor: pointColors,
+                    pointBackgroundColor: 'rgba(0,0,0,0)',
+                    pointRadius: pointRadius,
+                    pointBorderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Share Price'
+                        }
+                    }
+                }
+            }
+        });
 
-        document.getElementById('charts').appendChild(chart)
-
-        const ctx = chart.getContext('2d');
-        const equityChart = new Chart(ctx, {
+        let equityChart = document.createElement('canvas')
+        equityChart.id = `equityChart${id}`
+        charts.appendChild(equityChart)
+        new Chart(equityChart, {
             type: 'line',
             data: {
                 labels: formattedDates,
                 datasets: [{
                     label: 'Equity',
-                    data: equities,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1
+                    data: equity,
+                    backgroundColor: 'rgba(0,0,0,0)',
+                    borderColor: 'rgba(200,255,200,0.8)',
+                    borderWidth: 3,
+                    pointRadius: 0,
                 }]
             },
             options: {
@@ -117,9 +189,9 @@ function plot_graphs(graphs) {
                     }
                 }
             }
-        });        
+        }); 
+        chartList.appendChild(charts)
     }
-
 }
 
 pyodideWorker.onmessage = (event) => {

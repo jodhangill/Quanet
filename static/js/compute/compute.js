@@ -15,7 +15,9 @@ function updateCarousel() {
         currentIndex = totalSlides - 1;
     }
     let tickers = JSON.parse(localStorage.getItem('tickers'));
-    document.getElementById('curTicker').innerText = tickers[currentIndex];
+    var tickerOutput = document.getElementById('curTicker');
+    tickerOutput.innerText = tickers[currentIndex];
+    tickerOutput.href = `https://finance.yahoo.com/quote/${tickers[currentIndex]}/`;
     const offset = -currentIndex * 100;
     charts.style.transform = `translateX(${offset}%)`;
 }

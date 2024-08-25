@@ -45,7 +45,7 @@ function drawDot(dotString) {
     }
 }
 
-function plot_graphs(graphs) {
+function plotGraphs(graphs) {
     document.getElementById('chartControls').style.display = 'flex'
     let charts = document.getElementById('charts');
     while (charts.firstChild) {
@@ -175,8 +175,59 @@ function plot_graphs(graphs) {
     }
 }
 
+var screenData = [];
+var displayedGen = 0
+var totalGen = 0;
+
+function displayGen(fade=null) {
+    if (displayedGen >= totalGen) {
+        displayedGen = 0;
+    } else if (displayedGen < 0) {
+        displayedGen = totalGen - 1;
+    }
+    if (totalGen > 0) {
+        if (totalGen > 1) {
+            document.getElementById('genControls').style.display = 'flex';
+        }
+        
+        var data = screenData[displayedGen];
+        var genome = data.genome;
+        drawDot(genome.dot);
+        plotGraphs(genome.graphs)
+
+        let genOut = document.getElementById('genOutput');
+        genOut.innerText = `Generation ${data.gen + 1}`
+    }
+
+    var compute = document.getElementById('computeContainer');
+    compute.classList.remove("fade-left");
+    compute.classList.remove("fade-right");
+    compute.classList.remove("fade-up");
+    if (fade == 'left') {
+        compute.offsetHeight;
+        compute.classList.add('fade-left');
+    } else if (fade == 'right') {
+        compute.offsetHeight;
+        compute.classList.add('fade-right');
+    } else {
+        compute.offsetHeight;
+        compute.classList.add('fade-up');
+    }
+
+}
+
+function nextGen() {
+    displayedGen++;
+    displayGen('right');
+}
+
+function prevGen() {
+    displayedGen--;
+    displayGen('left');
+}
+
+var totalEvaled = 0;
 var currentGen = 0;
-var total = 0;
 
 pyodideWorker.onmessage = (event) => {
     let data = event.data
@@ -193,13 +244,18 @@ pyodideWorker.onmessage = (event) => {
         let bar = document.getElementById('loadingProgress');
         bar.style.transitionDuration = '200ms';
         bar.style.width = 100*update.genome/update.total + '%';
+        if (update.genome == update.total && update.total > 0) {
+            totalGen++;
+            console.log(totalGen)
+        }
         if (update.gen >= 0) {
             currentGen = update.gen;
+            console.log(currentGen)
         }
         if (update.total > 0) {
-            total = update.total
+            totalEvaled = update.total
         }
-        document.getElementById('loadingText').innerHTML = `Running generation ${currentGen + 1} (${update.genome}/${total})`;
+        document.getElementById('loadingText').innerHTML = `Running generation ${currentGen + 1} (${update.genome}/${totalEvaled})`;
 
     }
     if (error) {
@@ -216,8 +272,14 @@ pyodideWorker.onmessage = (event) => {
     }
     if (genome) {
         console.log(genome);
-        drawDot(genome.dot);
-        plot_graphs(genome.graphs);
+        document.getElementById('genomeDisplay').style.display = 'block';
+        screenData.push({
+            'gen': currentGen,
+            'genome': genome,
+        })
+        if (screenData.length >= 1) {
+            displayGen()
+        }
     }
 };
 
@@ -237,4 +299,4 @@ const asyncRun = (() => {
     };
 })();
 
-export { asyncRun };
+export { asyncRun, nextGen, prevGen };

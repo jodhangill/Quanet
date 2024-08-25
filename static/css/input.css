@@ -91,3 +91,18 @@ a {
     animation: fadeInUp;
     animation-duration: 0.5s;
 }
+
+.fade-up {
+    animation: fadeInUp;
+    animation-duration: 0.4s;
+}
+
+.fade-left {
+    animation: fadeInLeft;
+    animation-duration: 0.4s;
+}
+
+.fade-right {
+    animation: fadeInRight;
+    animation-duration: 0.4s;
+}

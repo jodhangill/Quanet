@@ -1,4 +1,7 @@
-import { asyncRun } from "./py-worker.js";
+import { asyncRun, nextGen, prevGen} from "./py-worker.js";
+
+window.nextGen = nextGen;
+window.prevGen = prevGen;
 
 async function fetchSessionData() {
     try {

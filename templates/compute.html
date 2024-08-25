@@ -17,35 +17,53 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full border p-10 border-white mt-20 min-h-[calc(100vh-80px)] md:max-h-[calc(100vh-80px)]">
-    <div id="loadingContainer" class="text-center">
-        <h2 id="loadingText" class="text-xl">Loading...</h2>
-        <div class="flex w-full justify-center">
-            <div id="loadingBar" class="w-2/3 h-2 m-4 bg-slate-700">
-                <div id="loadingProgress" class="h-2 bg-white duration-1000 ease-in-out w-px"></div>
+<div id="loadingContainer" class="fixed left-0 top-[76px] w-full md:top-20 text-center bg-gray-800">
+    <h2 id="loadingText" class="text-xl">Loading...</h2>
+    <div class="flex w-full justify-center">
+        <div id="loadingBar" class="w-2/3 h-1 m-2 rounded-md bg-slate-700">
+            <div id="loadingProgress" class="h-1 bg-white duration-1000 ease-in-out w-px rounded-md"></div>
+        </div>
+    </div>
+</div>
+<div class="overflow-x-hidden">
+    <div id="computeContainer" class="fade-up w-full pt-20 p-10 mt-20 mb-20">
+        <p id="log" class="hidden">Log:</p>
+        <div id="genomeDisplay" class="hidden">
+            <div class="border border-gray-800 p-2 rounded-md">
+                <div id="net-container" class="flex w-full justify-center"></div>
+                <div class="flex w-full">
+                    <div>
+                        <span>Total Compound Returns: </span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
+            <div class="border border-gray-800 p-2 rounded-md">
+                <div id="chartControls" class="w-full hidden justify-center">
+                    <button onclick="prev()" class="bg-gray-800 text-white rounded-r-none">&#60;</button>
+                    <a id="curTicker" class="rounded-none" target="_blank">APPL</a>
+                    <button onclick="next()" class="bg-gray-800 text-white rounded-l-none">&#62;</button>
+                </div>
+                <div id="carousel" class="relative w-full overflow-hidden">
+                    <div id="charts" class="flex transition-transform duration-300 ease-in-out">
+                    </div>
+                </div>
+            </div>        
         </div>
-    </div>
-    <p id="log" class="hidden">Log:</p>
-    <div id="net-container" class="flex w-full justify-center"></div>
-    <div id="chartControls" class="w-full hidden justify-between">
-        <button onclick="prev()" class="transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2">Prev</button>
-        <div>
-            <h2 id="curTicker">APPL</h2>
-        </div>
-        <button onclick="next()" class="transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2">Next</button>
-    </div>
-    <div id="carousel" class="relative w-full overflow-hidden">
-        <div id="charts" class="flex transition-transform duration-300 ease-in-out">
-        </div>
-    </div>
+    </div>    
+</div>
 
-
+<div id="genControls" class="hidden fixed bottom-0 w-full justify-between bg-gray-800 max-w-screen-md py-1 px-4 rounded-t-md">
+    <button onclick="window.prevGen()">Prev</button>
+    <div class="text-center">
+        <span>Showing best genome of:</span>
+        <h2 id="genOutput" class="font-bold text-xl"></h2>
+    </div>
+    <button onclick="window.nextGen()">Next</button>
 </div>
 
 
 <!-- Run Pyodide in separate thread to keep UI responsive -->
-<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
-<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/compute/consumer.js') }}"></script>
 {% endblock %}

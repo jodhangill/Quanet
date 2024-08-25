@@ -26,200 +26,26 @@
             </div>
         </div>
     </div>
-    <p id="log">Log:</p>
-    <div id="net-container"></div>
-    <div id="carousel" class="flex">
-        <button onclick="prev()">-</button>
-        <div id="charts">
-            <div id="1" style="display: block;">
-                <canvas id="priceChart0" height="877" width="1755"
-                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
-                </canvas>
-                <canvas
-                    id="equityChart0" height="877" width="1755"
-                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
-                </canvas>
-            </div>
-            <div id="2" style="display: none;">
-                <canvas id="priceChart1" height="877" width="1755"
-                    style="display: block; box-sizing: border-box; height: 602px; width: 1404px;">
-                </canvas>
-                <canvas id="equityChart1" height="877" width="1755"
-                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
-                </canvas>
-            </div>
-            <div id="3" style="display: none;">
-                <canvas id="priceChart2" height="877" width="1755"
-                    style="display: block; box-sizing: border-box; height: 802px; width: 1404px;">
-                </canvas>
-                <canvas id="equityChart2" height="877" width="1755"
-                    style="display: block; box-sizing: border-box; height: 702px; width: 1404px;">
-                </canvas>
-            </div>
+    <p id="log" class="hidden">Log:</p>
+    <div id="net-container" class="flex w-full justify-center"></div>
+    <div id="chartControls" class="w-full hidden justify-between">
+        <button onclick="prev()" class="transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2">Prev</button>
+        <div>
+            <h2 id="curTicker">APPL</h2>
         </div>
-        <button onclick="next()">-</button>
+        <button onclick="next()" class="transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2">Next</button>
     </div>
+    <div id="carousel" class="relative w-full overflow-hidden">
+        <div id="charts" class="flex transition-transform duration-300 ease-in-out">
+        </div>
+    </div>
+
+
 </div>
-
-<script>
-    let ci = 1
-    function next() {
-        document.getElementById(ci).style.display = 'none';
-        document.getElementById(ci+1).style.display = 'block';
-        ci++;
-        // Example data
-        const priceData = [10, 20, 30, 40, 50];
-        const equityData = [15, 25, 35, 45, 55];
-    
-        // Create the price charts
-        const priceCharts = [
-            'priceChart0',
-            'priceChart1',
-            'priceChart2'
-        ];
-    
-        priceCharts.forEach(chartId => {
-            new Chart(document.getElementById(chartId), {
-                type: 'line', // Choose the type of chart (line, bar, etc.)
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
-                    datasets: [{
-                        label: 'Price',
-                        data: priceData,
-                        borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            beginAtZero: true
-                        },
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        });
-    
-        // Create the equity charts
-        const equityCharts = [
-            'equityChart0',
-            'equityChart1',
-            'equityChart2'
-        ];
-    
-        equityCharts.forEach(chartId => {
-            new Chart(document.getElementById(chartId), {
-                type: 'bar', // Choose the type of chart (line, bar, etc.)
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
-                    datasets: [{
-                        label: 'Equity',
-                        data: equityData,
-                        backgroundColor: 'green',
-                        borderColor: 'darkgreen',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            beginAtZero: true
-                        },
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        });
-        
-    }
-
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     // Example data
-    //     const priceData = [10, 20, 30, 40, 50];
-    //     const equityData = [15, 25, 35, 45, 55];
-    
-    //     // Create the price charts
-    //     const priceCharts = [
-    //         'priceChart0',
-    //         'priceChart1',
-    //         'priceChart2'
-    //     ];
-    
-    //     priceCharts.forEach(chartId => {
-    //         new Chart(document.getElementById(chartId), {
-    //             type: 'line', // Choose the type of chart (line, bar, etc.)
-    //             data: {
-    //                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
-    //                 datasets: [{
-    //                     label: 'Price',
-    //                     data: priceData,
-    //                     borderColor: 'blue',
-    //                     backgroundColor: 'rgba(0, 0, 255, 0.2)',
-    //                     borderWidth: 1
-    //                 }]
-    //             },
-    //             options: {
-    //                 responsive: true,
-    //                 scales: {
-    //                     x: {
-    //                         beginAtZero: true
-    //                     },
-    //                     y: {
-    //                         beginAtZero: true
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     });
-    
-    //     // Create the equity charts
-    //     const equityCharts = [
-    //         'equityChart0',
-    //         'equityChart1',
-    //         'equityChart2'
-    //     ];
-    
-    //     equityCharts.forEach(chartId => {
-    //         new Chart(document.getElementById(chartId), {
-    //             type: 'bar', // Choose the type of chart (line, bar, etc.)
-    //             data: {
-    //                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // X-axis labels
-    //                 datasets: [{
-    //                     label: 'Equity',
-    //                     data: equityData,
-    //                     backgroundColor: 'green',
-    //                     borderColor: 'darkgreen',
-    //                     borderWidth: 1
-    //                 }]
-    //             },
-    //             options: {
-    //                 responsive: true,
-    //                 scales: {
-    //                     x: {
-    //                         beginAtZero: true
-    //                     },
-    //                     y: {
-    //                         beginAtZero: true
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     });
-    // });
-    
-    
-    </script>
-    
 
 
 <!-- Run Pyodide in separate thread to keep UI responsive -->
-
+<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
+<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/compute/consumer.js') }}"></script>
 {% endblock %}

@@ -91,7 +91,7 @@ function addTickerData(event) {
     saveAll();
 }
 
-function jumpTo(id) {
+function jumpToElem(id) {
     const element = document.getElementById(id);
     element.scrollIntoView();
     window.scrollBy(0, -100);

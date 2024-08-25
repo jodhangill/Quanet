@@ -187,7 +187,16 @@ def draw_net(config, genome, view=False, filename=None, node_names=None, show_di
     return dot
 
 def log(msg):
-    result_dict = {"update": msg}
+    result_dict = {"log": msg}
+    result_string = json.dumps(result_dict)
+    js.postMessage(result_string)
+
+def send_generation_progress(gen, genome, total):
+    result_dict = {"update": {
+        "gen": gen,
+        "genome": genome,
+        "total": total,
+    }}
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
@@ -379,6 +388,7 @@ class NeatStrategy(bt.Strategy):
         self.prices.append(self.data.close[0])
 
 def eval_genomes(genomes, config, fitness_function, datas):
+    genome_idx = 0
     for genome_id, genome in genomes:
         results = []
         genome.fitness = 0
@@ -432,7 +442,10 @@ def eval_genomes(genomes, config, fitness_function, datas):
             results.append(result)
 
             genome.fitness += fitness
+            
         genome.results = results
+        genome_idx += 1
+        send_generation_progress(-1, genome_idx, len(genomes))
 
 class CustomReporter(neat.reporting.BaseReporter):
     def __init__(self, show_species_detail):
@@ -445,6 +458,7 @@ class CustomReporter(neat.reporting.BaseReporter):
     def start_generation(self, generation):
         self.generation = generation
         log('\n ****** Running generation {0} ****** \n'.format(generation))
+        send_generation_progress(generation, 0, 0)
         self.generation_start_time = time.time()
 
     def end_generation(self, config, population, species_set):

@@ -81,16 +81,51 @@ function plotGraphs(graphs) {
         let slide = document.createElement('div')
         slide.classList.add(`chart-slide`)
         slide.style.width = '100%';
-        slide.style.height = '400px'
+        slide.style.height = '450px'
         slide.style.flexShrink = 0;
 
         charts.appendChild(slide)
+
+
+        let metrics = document.createElement('div');
+        metrics.style.display = 'flex';
+        metrics.style.width = '100%';
+        metrics.style.justifyContent = 'space-around';
+        metrics.style.marginTop = '20px';
+        metrics.style.marginBottom = '15px';
+        metrics.innerHTML = `
+            <p style="color: rgb(200, 255, 200);">
+                <span>Fitness: </span>
+                <span>${(Math.round(graph.fitness * 100) / 100).toFixed(2)}</span>
+            </p>
+            <p style="color: rgb(144, 255, 233);">
+                <span>Sharpe Ratio: </span>
+                <span>${(Math.round(graph.sr * 100) / 100).toFixed(2)}</span>
+            </p>
+            <p style="color: rgb(255, 147, 147);">
+                <span>Max Drawdown: </span>
+                <span>${(Math.round(graph.md * 100) / 100).toFixed(2)}</span>
+            </p>
+            <p style="color: rgb(255, 246, 144);">
+                <span>Total Compound Returns: </span>
+                <span>${(Math.round(graph.tcr * 100) / 100).toFixed(2)}</span>
+            </p>
+            <p style="color: rgb(146, 212, 255);">
+                <span>SQN: </span>
+                <span>${(Math.round(graph.sqn * 100) / 100).toFixed(2)}</span>
+            </p>
+        `;
+        slide.appendChild(metrics);
 
         // Create the chart
         let combinedChart = document.createElement('canvas')
         combinedChart.id = `combinedChart${id}`
 
-        slide.appendChild(combinedChart)
+        let chartContainer = document.createElement('div')
+        chartContainer.style.height = 400 - metrics.offsetHeight + 'px';
+        chartContainer.style.width = '100%';
+        chartContainer.appendChild(combinedChart);
+        slide.appendChild(chartContainer);
         new Chart(combinedChart, {
             type: 'line',
             data: {
@@ -111,7 +146,7 @@ function plotGraphs(graphs) {
                         label: 'Equity',
                         data: equity,
                         backgroundColor: 'rgba(0,0,0,0)',
-                        borderColor: 'rgba(200,255,200,0.8)',
+                        borderColor: 'rgba(220,200,255,0.8)',
                         borderWidth: equityBorder,
                         pointRadius: 0,
                         yAxisID: 'y2', // ID for Equity y-axis
@@ -191,6 +226,9 @@ function displayGen(fade=null) {
         drawDot(genome.dot);
         plotGraphs(genome.graphs);
 
+        let dotOut = document.getElementById('dotOutput');
+        dotOut.innerText = `Best Genome of Generation ${data.gen + 1}`
+
         let genOut = document.getElementById('genOutput');
         genOut.innerText = `Generation ${data.gen + 1}`
     }
@@ -251,7 +289,7 @@ pyodideWorker.onmessage = (event) => {
         if (update.total > 0) {
             totalEvaled = update.total
         }
-        document.getElementById('loadingText').innerHTML = `Running generation ${currentGen + 1} (${update.genome}/${totalEvaled})`;
+        document.getElementById('loadingText').innerHTML = `Running Generation ${currentGen + 1} (${update.genome}/${totalEvaled})`;
 
     }
     if (error) {
@@ -268,7 +306,6 @@ pyodideWorker.onmessage = (event) => {
     }
     if (genome) {
         console.log(genome);
-        console.log("tet11", document.getElementById('genomeDisplay').clientWidth)
         document.getElementById('genomeDisplay').style.display = 'block';
         screenData.push({
             'gen': currentGen,
@@ -276,7 +313,6 @@ pyodideWorker.onmessage = (event) => {
         })
         displayedGen = currentGen;
         displayGen()
-        console.log("tet12", document.getElementById('genomeDisplay').clientWidth)
     }
 };
 

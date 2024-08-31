@@ -185,13 +185,25 @@ function setCaretPosition(caretPos) {
 function formatOutput(text) {
     // Put display text in parsable form
     var formattedText = "";
-    // Remove invisible chars
+    // Replace invisible chars with parentheses
+    let parenClosed = true;
     for (let i = 0; i < text.length; i++) {
         if (text.charCodeAt(i) !== "‎".charCodeAt(0)) {
             formattedText += text.charAt(i);
         }
+        else {
+            if (parenClosed) {
+                formattedText += '(';
+                parenClosed = false;
+            }
+            else {
+                formattedText += ')';
+                parenClosed = true;
+            }
+        }
     }
-    return formattedText.replace(/ /g, '_').toLowerCase();
+    console.log(formattedText.replace(/ /g, '_').replace(/\d+(\.\d+)?/g, "($&)").replace(/\)\(/g, ")*(").toLowerCase())
+    return formattedText.replace(/ /g, '_').replace(/\d+(\.\d+)?/g, "($&)").replace(/\)\(/g, ")*(").toLowerCase();
 }
 
 function updateParenCounts() {

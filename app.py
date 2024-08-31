@@ -108,6 +108,13 @@ def process_form():
     data_requests = json.loads(request.form['datas'])
     fitness_function = request.form['fitness']
 
+    print(fitness_function)
+    try:
+        sharpe_ratio = max_drawdown = total_compound_returns = sqn = 0.1
+        eval(fitness_function)
+    except Exception as e:
+        return make_response({'errors': ['Invalid fitness function syntax']}, 404)
+
     data_files, errors = download_data(data_requests)
     if errors:
         for file in data_files:

@@ -137,7 +137,12 @@ def process_form():
 
 @app.route('/compute')
 def compute():
-    return render_template('compute.html')
+    data_files = session.get('data_files')
+
+    if os.path.isfile(data_files[0]):
+        return render_template('compute.html')
+    else:
+        return redirect('/configurator')
 
 @app.route('/get-session-data', methods=['GET'])
 def get_session_data():

@@ -250,12 +250,16 @@ function displayGen(fade=null) {
 
 }
 
+var navigating = false;
+
 function nextGen() {
+    navigating = true;
     displayedGen++;
     displayGen('right');
 }
 
 function prevGen() {
+    navigating = true;
     displayedGen--;
     displayGen('left');
 }
@@ -311,8 +315,10 @@ pyodideWorker.onmessage = (event) => {
             'gen': currentGen,
             'genome': genome,
         })
-        displayedGen = currentGen;
-        displayGen()
+        if (!navigating) {
+            displayedGen = currentGen;
+            displayGen();
+        }
     }
 };
 

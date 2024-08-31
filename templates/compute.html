@@ -25,8 +25,8 @@
         </div>
     </div>
 </div>
-<div class="overflow-x-hidden">
-    <div id="computeContainer" class="fade-up w-full pt-20 p-10 mt-20 mb-20">
+<div class="overflow-clip w-full max-w-screen-lg">
+    <div id="computeContainer" class="w-full pt-20 p-10 mt-20 mb-20">
         <p id="log" class="hidden">Log:</p>
         <div id="genomeDisplay" class="hidden">
             <div class="border border-gray-800 p-2 rounded-md">
@@ -64,6 +64,6 @@
 
 
 <!-- Run Pyodide in separate thread to keep UI responsive -->
-<script type="module" src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
+<script src="{{ url_for('static', filename='js/compute/compute.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/compute/consumer.js') }}"></script>
 {% endblock %}

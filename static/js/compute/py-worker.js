@@ -67,23 +67,28 @@ function plotGraphs(graphs) {
             return 'rgba(0,0,0,0)';
         });
         let pointRadius = graph.orderSequence.map(value => {
-            return value === 'hold' ? 0 : 2 + (9/graph.orderSequence.length);
+            if (window.screen.width < 640) {
+                return value === 'hold' ? 0 : 1;
+            } else {
+                return value === 'hold' ? 0 : 2 + (9/graph.orderSequence.length);
+            }
         });
+        let equityBorder = window.screen.width <640 ? 1 : 3;
 
         // Convert date strings to JavaScript Date objects
         const formattedDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
 
         let slide = document.createElement('div')
-        slide.classList.add('chart-slide')
+        slide.classList.add(`chart-slide`)
         slide.style.width = '100%';
+        slide.style.height = '400px'
         slide.style.flexShrink = 0;
+
+        charts.appendChild(slide)
 
         // Create the chart
         let combinedChart = document.createElement('canvas')
         combinedChart.id = `combinedChart${id}`
-        combinedChart.style.display = 'block'
-        combinedChart.style.width = '100%'
-        combinedChart.style.height = 'auto'
 
         slide.appendChild(combinedChart)
         new Chart(combinedChart, {
@@ -107,7 +112,7 @@ function plotGraphs(graphs) {
                         data: equity,
                         backgroundColor: 'rgba(0,0,0,0)',
                         borderColor: 'rgba(200,255,200,0.8)',
-                        borderWidth: 3,
+                        borderWidth: equityBorder,
                         pointRadius: 0,
                         yAxisID: 'y2', // ID for Equity y-axis
                     }
@@ -115,6 +120,7 @@ function plotGraphs(graphs) {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: true,
@@ -151,10 +157,6 @@ function plotGraphs(graphs) {
                             text: 'Share Price'
                         },
                         position: 'left',
-                        // Optionally adjust the range and step size
-                        // min: 0,
-                        // max: 100,
-                        // stepSize: 10
                     },
                     y2: {
                         title: {
@@ -162,16 +164,10 @@ function plotGraphs(graphs) {
                             text: 'Equity'
                         },
                         position: 'right',
-                        // Optionally adjust the range and step size
-                        // min: 0,
-                        // max: 10000,
-                        // stepSize: 500
                     }
                 }
             }
         });
-
-        charts.appendChild(slide)
     }
 }
 
@@ -193,7 +189,7 @@ function displayGen(fade=null) {
         var data = screenData[displayedGen];
         var genome = data.genome;
         drawDot(genome.dot);
-        plotGraphs(genome.graphs)
+        plotGraphs(genome.graphs);
 
         let genOut = document.getElementById('genOutput');
         genOut.innerText = `Generation ${data.gen + 1}`
@@ -272,14 +268,15 @@ pyodideWorker.onmessage = (event) => {
     }
     if (genome) {
         console.log(genome);
+        console.log("tet11", document.getElementById('genomeDisplay').clientWidth)
         document.getElementById('genomeDisplay').style.display = 'block';
         screenData.push({
             'gen': currentGen,
             'genome': genome,
         })
-        if (screenData.length >= 1) {
-            displayGen()
-        }
+        displayedGen = currentGen;
+        displayGen()
+        console.log("tet12", document.getElementById('genomeDisplay').clientWidth)
     }
 };
 

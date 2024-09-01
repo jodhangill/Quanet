@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,13 +13,16 @@
 </head>
 
 <body class="bg-gray-900 text-white custom-cursor">
-    <div id="progress" class="flex w-screen items-center justify-center z-10 fixed bg-gray-900">
+    <div id="progress" class="w-screen items-center hidden justify-center z-10 fixed bg-gray-900">
         <div class="w-full max-w-screen-lg">
-            <a href="/" class="fixed sm:m-3 top-0 right-0 p-1 z-20 border-none rounded-none rounded-bl-md sm:rounded-md">
+            <a href="/" class="fixed sm:m-3 top-0 left-0 p-1 z-20 border-none rounded-none rounded-br-md sm:rounded-md">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0,0,256,256">
                     <g fill="#fcfcfc" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M12,2.09961l-11,9.90039h3v9h6v-7h4v7h6v-9h3z"></path></g></g>
                 </svg>
-            </a>                  
+            </a>          
+            <button onclick="document.getElementById('guide').style.display = 'block'" href="/" class="text-lg fixed text-center sm:m-3 w-7 top-0 right-0 p-1 z-20 border-none rounded-none rounded-bl-md sm:rounded-md">
+                ?
+            </button>          
             <div class="w-full max-w-screen-lg p-4 flex justify-around">
                 <a href="/fitness" class="md:text-lg border-none">
                     Fitness
@@ -36,7 +40,7 @@
         </div>        
     </div>
 
-
+    {% include 'guide.html'%}
     <div class="min-h-screen flex items-center justify-center">
         {% block content %}
         {% endblock %}

@@ -106,3 +106,20 @@ a {
     animation: fadeInRight;
     animation-duration: 0.4s;
 }
+
+#guide p{
+    @apply sm:text-lg
+}
+
+#guide h2{
+    @apply font-semibold
+}
+
+#guide h3{
+    @apply font-extralight
+}
+
+#guideBox {
+    animation: fadeInDown;
+    animation-duration: 0.4s;
+}

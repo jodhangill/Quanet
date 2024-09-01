@@ -1,0 +1,88 @@
+<div id="guide" class="fixed hidden z-50 top-0 w-screen h-screen bg-[#0000003c]">
+    <div class="flex w-full h-full">
+        <div id="guideBox" class="m-auto bg-slate-900 w-5/6 md:w-2/3 p-5 border max-h-[90%] overflow-scroll border-white rounded">
+            <div class="my-4 flex w-full flex-col justify-center">
+                <h2 class="text-3xl">Index</h2>
+                <br>
+                <button onclick="document.getElementById('WhatHeader').scrollIntoView()">What is Quanet?</button>
+                <br>
+                <button onclick="document.getElementById('HowWorkHeader').scrollIntoView()">How does it work?</button>
+                <br>
+                <button onclick="document.getElementById('HowUseHeader').scrollIntoView()">How do I use it?</button>                
+            </div>
+            <h2 id="WhatHeader" class="text-3xl">What is Quanet?</h2>
+            <br>
+            <p>
+                Quanet is a codeless interface for applying the NeuroEvolution of Augmenting Topologies (NEAT) algorithm to quantitative trading.
+                <br>
+                <br>
+                In simpler terms, Quanet is a tool that allows you to use advanced trading algorithms without needing to write any code. It specifically uses a technique called NEAT, which stands for NeuroEvolution of Augmenting Topologies. This technique is used to help improve trading strategies by simulating the process of evolution, allowing the system to learn and adapt over time to find better trading solutions.
+                <br>
+                <br>
+                In essence, Quanet makes it easy for anyone to harness the power of complex algorithms in trading, even if they don't have programming skills.
+            </p>
+            <hr class="my-5">
+            <h2 id="HowWorkHeader" class="text-3xl">How Quanet Works</h2>
+            <br>
+            <h3 class="text-2xl">Initialization</h3>
+            <p>
+                Quanet starts by setting up an initial population of <strong class="text-teal-200">trading strategies</strong>, each represented by a neural network. These strategies are random variations, or "genomes," that the algorithm will evaluate and refine over time.
+                <br>
+                <br>
+            </p>
+            <h3 class="text-2xl">Simulation</h3>
+            <p>
+                The algorithm tests each <strong class="text-teal-200">strategy</strong> using the chosen <strong class="text-lime-200">stock data</strong> over a specified time range. It simulates trading activities such as buying and selling based on various indicators and tracks how each strategy performs.
+                <br>
+                <br>
+            </p>
+            <h3 class="text-2xl">Fitness Calculation</h3>
+            <p>
+                After simulating trading, Quanet calculates the overall <strong class="text-amber-200">fitness</strong> of each <strong class="text-teal-200">strategy</strong> by aggregating performance scores from all the <strong class="text-lime-200">stock data</strong>. This score reflects how well the strategy performed across different scenarios.
+                <br>
+                <br>
+            </p>
+            <h3 class="text-2xl">Evolution</h3>
+            <p>
+                Based on the <strong class="text-amber-200">fitness scores</strong>, Quanet evolves the population of strategies. It selects the better-performing strategies to create new "offspring" strategies. These offspring are variations of the best strategies, incorporating mutations and recombinations to explore new possibilities.
+                <br>
+                <br>
+            </p>
+            <h3 class="text-2xl">Rinse and Repeat</h3>
+            <p>
+                This process repeats for a number of generations. With each generation, Quanet refines and improves the trading strategies by continuously evaluating and evolving them, aiming to find the most effective strategy.
+            </p>
+            <hr class="my-5">
+            <h2 id="HowUseHeader" class="text-3xl">How to Use Quanet</h2>
+            <br>
+            <h3 class="text-2xl">Create Your Fitness Function</h3>
+            <p>
+                Think about what metrics are important for evaluating your trading strategies. Decide on metrics like Sharpe ratio, max drawdown, total returns, and SQN. Input these metrics into Quanet to create your fitness function.
+                <br>
+                <br>  
+                For example, to find a strategy that balances profitability and risk, you could use the fitness function 
+                <br>      
+                <span style="color: rgb(255, 246, 144); font-size: 14px; border: 1px solid rgb(255, 246, 144); margin: 0px 2px; border-radius: 4px; padding: 0px 2px; position: relative; top: 1px;">TOTAL COMPOUND RETURNS</span>/(1 + <span style="color: rgb(255, 147, 147); font-size: 14px; border: 1px solid rgb(255, 147, 147); border-radius: 4px; padding: 0px 2px; margin: 0px 2px; position: relative; top: 1px;">MAX DRAWDOWN</span>)
+                <br>
+                <br>
+            </p>
+            <h3 class="text-2xl">Choose Your Stock Data</h3>
+            <p>
+                Select the stocks and time periods you want to analyze. Quanet allows you to pick specific stocks and date ranges for testing your trading strategies.
+                <br>
+                <br>                
+            </p>
+            <h3 class="text-2xl">Configure the NEAT Algorithm</h3>
+            <p>
+                Quanet is built on NEAT-Python and provides extensive configuration options for almost all the parameters used in NEAT-Python. To tailor the algorithm to your needs, you can adjust settings such as the maximum number of generations, the fitness threshold, and the population size. For detailed information about these parameters, please see the <a class=" p-0 border-none underline" target="_blank" href="https://neat-python.readthedocs.io/en/latest/config_file.html">NEAT-Python documentation</a>.
+                <br>
+                <br>                
+            </p>
+            <h3 class="text-2xl">Run the Algorithm</h3>
+            <p>
+                Once everything is configured, start the algorithm. Quanet will automatically run the simulations, evaluate each trading strategy, and provide you with updates on its progress.
+            </p>
+        </div>
+        <button onclick="document.getElementById('guide').style.display = 'none'" class="bg-gray-800 text-center w-full rounded-b-none absolute bottom-0">Close</button>
+    </div>
+</div>

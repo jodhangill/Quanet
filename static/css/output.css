@@ -1234,6 +1234,10 @@ video {
   padding-top: 1.5rem;
 }
 
+.pb-20 {
+  padding-bottom: 5rem;
+}
+
 .text-center {
   text-align: center;
 }
@@ -1791,6 +1795,10 @@ a:hover {
 
   .md\:whitespace-normal {
     white-space: normal;
+  }
+
+  .md\:pb-0 {
+    padding-bottom: 0px;
   }
 
   .md\:text-2xl {

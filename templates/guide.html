@@ -1,6 +1,6 @@
 <div id="guide" class="fixed hidden z-50 top-0 w-screen h-screen bg-[#0000003c]">
     <div class="flex w-full h-full">
-        <div id="guideBox" class="m-auto bg-slate-900 w-5/6 md:w-2/3 p-5 border max-h-[90%] overflow-scroll border-white rounded">
+        <div id="guideBox" class="m-auto bg-slate-900 w-[95%] md:w-2/3 p-4 border max-h-[90%] overflow-scroll border-white rounded">
             <div class="my-4 flex w-full flex-col justify-center">
                 <h2 class="text-3xl">Index</h2>
                 <br>
@@ -27,13 +27,23 @@
             <h3 class="text-2xl">Initialization</h3>
             <p>
                 Quanet starts by setting up an initial population of <strong class="text-teal-200">trading strategies</strong>, each represented by a neural network. These strategies are random variations, or "genomes," that the algorithm will evaluate and refine over time.
-                <br>
+                <div class="mt-4 flex w-full justify-center">
+                    <div class="text-center w-full md:w-4/5">
+                        <img class="rounded-lg"src="/static/images/genome.png">
+                        <span>Genome Example</span>
+                    </div>                    
+                </div>
                 <br>
             </p>
             <h3 class="text-2xl">Simulation</h3>
             <p>
                 The algorithm tests each <strong class="text-teal-200">strategy</strong> using the chosen <strong class="text-lime-200">stock data</strong> over a specified time range. It simulates trading activities such as buying and selling based on various indicators and tracks how each strategy performs.
-                <br>
+                <div class="mt-4 flex w-full justify-center">
+                    <div class="text-center w-full md:w-4/5">
+                        <img class="rounded-lg" src="/static/images/graph.png">
+                        <span>Simulated Strategy</span>
+                    </div>                    
+                </div>
                 <br>
             </p>
             <h3 class="text-2xl">Fitness Calculation</h3>
@@ -69,7 +79,12 @@
             <h3 class="text-2xl">Choose Your Stock Data</h3>
             <p>
                 Select the stocks and time periods you want to analyze. Quanet allows you to pick specific stocks and date ranges for testing your trading strategies.
-                <br>
+                <div class="mt-4 flex w-full justify-center">
+                    <div class="text-center w-full md:w-4/5">
+                        <img class="rounded-lg" src="/static/images/tickers.png">
+                        <span>Ticker Examples</span>
+                    </div>                    
+                </div>
                 <br>                
             </p>
             <h3 class="text-2xl">Configure the NEAT Algorithm</h3>

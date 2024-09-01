@@ -84,7 +84,7 @@ a {
     pointer-events: none;
     background-image: linear-gradient(to right,
             rgba(255, 255, 255, 0) 96%,
-            rgba(0, 0, 0, 0.9) 100%);
+            rgba(3, 7, 18, 0.9) 100%);
 }
 
 #neatForm>*:not([id="advanced"]), #advanced>* {
@@ -116,7 +116,7 @@ a {
 }
 
 #guide h3{
-    @apply font-extralight
+    @apply font-extralight tracking-wide text-[#a4aedb]
 }
 
 #guideBox {

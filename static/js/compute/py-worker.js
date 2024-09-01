@@ -73,7 +73,7 @@ function plotGraphs(graphs) {
                 return value === 'hold' ? 0 : 2 + (9/graph.orderSequence.length);
             }
         });
-        let equityBorder = window.screen.width <640 ? 1 : 3;
+        let equityBorder = window.innerWidth < 640 ? 1 : 3;
 
         // Convert date strings to JavaScript Date objects
         const formattedDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
@@ -88,7 +88,9 @@ function plotGraphs(graphs) {
 
 
         let metrics = document.createElement('div');
-        metrics.style.display = 'flex';
+        if (window.innerWidth > 1024) {
+            metrics.style.display = 'flex';
+        }
         metrics.style.width = '100%';
         metrics.style.justifyContent = 'space-around';
         metrics.style.marginTop = '20px';

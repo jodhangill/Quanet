@@ -34,6 +34,45 @@
                     <h2 id="dotOutput" class="text-lg"></h2>
                 </div>
                 <div id="net-container" class="flex w-full justify-center"></div>
+                <div class="flex my-3 w-full justify-center">
+                    <button onclick="document.getElementById('equationBox').style.display = 'block'">Show Equation</button>
+                </div>
+                <div id="equationBox" class="hidden z-20 fixed top-0 left-0 w-screen h-screen bg-[#0000003c]">
+                    <div class="flex w-full h-full py-16">
+                        <div class="m-auto max-h-full bg-slate-900 w-3/4 md:w-1/2 p-5 border overflow-scroll border-white rounded">
+                            <div class="mb-10 w-full flex justify-center">
+                                <div>
+                                    <h2 class="text-orange-400 text-xl">Disclaimer: This equation is for educational purposes only and should not be used for real-world trading or financial decisions.</h2>
+                                    <br>
+                                    <h3 class="text-2xl">Equation</h3>
+                                    <p id="equationOutput" class="w-full border rounded border-gray-600 bg-gray-900 p-2">
+                                    </p>
+                                    <br>
+                                    <h3 class="text-2xl">Usage</h3>
+                                    <p>
+                                        If the output of the equation is greater than 0.5, then BUY.
+                                        Otherwise, SELL.                                        
+                                    </p>
+                                    <br>
+                                    <h3 class="text-2xl">Variables</h3>
+                                    <br>
+                                    <ul>
+                                        <li>ATR = Scaled Average True Range</li>
+                                        <li>ADX = Scaled Average Directional Movement Index</li>
+                                        <li>RSI = Scaled Relative Strength Index</li>
+                                        <li>SMA = Scaled Moving Average Simple</li>
+                                        <li>Volume = Scaled Volume</li>
+                                    </ul>      
+                                    <br>
+                                    <p class="text-sm">
+                                        NOTE: These variables are derived by scaling the specified indicator. To scale the following indicators, the indicator value of the current data point is normalized using the indicator values of the previous data points provided.
+                                    </p>                              
+                                </div>
+                            </div>
+                            <button onclick="document.getElementById('equationBox').style.display = 'none'" class="bg-gray-700 text-lg m-2 p-2 fixed top-0 right-0">⨉</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="border border-gray-800 p-2 rounded-md">
                 <div id="chartControls" class="w-full hidden justify-center">

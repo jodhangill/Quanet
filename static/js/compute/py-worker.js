@@ -228,6 +228,9 @@ function displayGen(fade=null) {
         drawDot(genome.dot);
         plotGraphs(genome.graphs);
 
+        let eqnOut = document.getElementById('equationOutput')
+        eqnOut.innerText = genome.equation
+
         let dotOut = document.getElementById('dotOutput');
         dotOut.innerText = `Best Genome of Generation ${data.gen + 1}`
 

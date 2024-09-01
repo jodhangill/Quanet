@@ -200,6 +200,22 @@ def send_generation_progress(gen, genome, total):
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)
 
+def neural_net_to_equation(nodes, connections, id):
+    node_names={-1: "SMA", -2: "ATR", -3: "ADX", -4: "RSI", -5: "Volume"}
+    if id < 0:
+        return node_names[id]
+
+    contributions = []
+    for connection in connections:
+        if connection['enabled'] and connection['to'] == id:
+                from_node = connection['from']
+                weight = connection['weight']
+                contributions.append(f"({weight} * {neural_net_to_equation(nodes, connections, from_node)})")
+
+    agg_contributions = " + ".join(contributions)
+    output = f"1 / (1 + exp(-({agg_contributions})))"
+    return output
+
 def send_genome(genome, config):
     formatted_connections = []
     for key, gene in genome.connections.items():
@@ -225,8 +241,6 @@ def send_genome(genome, config):
     # Draw neural network in dot format
     dot = draw_net(config, genome, node_names={0: "Buy/Sell", -1: "SMA", -2: "ATR", -3: "ADX", -4: "RSI", -5: "Volume"})
 
-    print(len(genome.results))
-    print(genome.results)
     result_dict = {"genome": {
         "key": genome.key,
         "connections": formatted_connections,
@@ -234,9 +248,8 @@ def send_genome(genome, config):
         "fitness": genome.fitness,
         "dot": dot.source,
         "graphs": genome.results,
+        "equation": neural_net_to_equation(formatted_nodes, formatted_connections, 0),
     }}
-
-    print(genome.results[0].get('cash'))
 
     result_string = json.dumps(result_dict)
     js.postMessage(result_string)

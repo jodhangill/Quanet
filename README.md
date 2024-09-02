@@ -13,18 +13,25 @@ Quanet is a tool for applying the NeuroEvolution of Augmenting Topologies (NEAT)
 
 ## How Quanet Works
 
-1. **Define Fitness Function**: Create a function that measures trading strategy performance using metrics like max drawdown and total compound returns.
-2. **Select Stock Data**: Choose the stock data and time periods you want to analyze.
-3. **Configure NEAT Algorithm**: Set parameters such as max generations, number of hidden nodes, and population size.
-4. **Run the Algorithm**: Quanet evaluates and evolves trading strategies over multiple generations based on the configured parameters.
-5. **Review Results**: Analyze the top-performing strategy based on the fitness function to make informed trading decisions.
+1. **Initialization**: Quanet starts by setting up an initial population of trading strategies, each represented by a neural network. These strategies are random variations, or "genomes," that the algorithm will evaluate and refine over time.
+![genome example](/static/images/genome.png)
+*Genome Example*
+2. **Simulation**: The algorithm tests each strategy using the chosen stock data over a specified time range. It simulates trading activities such as buying and selling based on various indicators and tracks how each strategy performs.
+![Simulated Strategy](/static/images/graph.png)
+*Simulated Strategy*
+3. **Fitness Calculation**: After simulating trading, Quanet calculates the overall fitness of each strategy by aggregating performance scores from all the stock data. This score reflects how well the strategy performed across different scenarios.
+4. **Evolution**: Based on the fitness scores, Quanet evolves the population of strategies. It selects the better-performing strategies to create new "offspring" strategies. These offspring are variations of the best strategies, incorporating mutations and recombinations to explore new possibilities.
+5. **Rinse and Repeat**: This process repeats for a number of generations. With each generation, Quanet refines and improves the trading strategies by continuously evaluating and evolving them, aiming to find the most effective strategy.
 
-## Getting Started
+## How to Use Quanet
 
-2. **Configure Your Strategy**: Set up your fitness function, select stock data, and adjust NEAT parameters.
-3. **Run Simulations**: Execute the algorithm and monitor real-time updates on strategy performance.
-4. **Analyze Results**: Use the output to review and assess the performance of the algorithm.
-
+1. **Create Your Fitness Function**: Think about what metrics are important for evaluating your trading strategies. Decide on metrics like Sharpe ratio, max drawdown, total returns, and SQN. Input these metrics into Quanet to create your fitness function. 
+    For example, to find a strategy that balances profitability and risk, you could use the fitness function TOTAL COMPOUND RETURNS/(1 + MAX DRAWDOWN)
+2. **Choose Your Stock Data**: Select the stocks and time periods you want to analyze. Quanet allows you to pick specific stocks and date ranges for testing your trading strategies.
+![Ticker Examples](/static/images/tickers.png)
+*Ticker Examples*
+3. **Configure the NEAT Algorithm**: Quanet is built on NEAT-Python and provides extensive configuration options for almost all the parameters used in NEAT-Python. To tailor the algorithm to your needs, you can adjust settings such as the maximum number of generations, the fitness threshold, and the population size.
+4. **Run the Algorithm**: Once everything is configured, start the algorithm. Quanet will automatically run the simulations, evaluate each trading strategy, and provide you with updates on its progress.
 ## Disclaimer
 
 The output equation is for educational purposes only and should not be used for real-world trading or financial decisions.
@@ -32,7 +39,3 @@ The output equation is for educational purposes only and should not be used for 
 ## Acknowledgments
 
 Special thanks to the developers of NEAT-Python and Backtrader for their contributions to this project. For detailed information on NEAT-Python parameters and configuration, see https://neat-python.readthedocs.io/en/latest/config_file.html.
-
----
-
-Feel free to further customize it according to your needs!

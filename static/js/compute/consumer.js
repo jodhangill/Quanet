@@ -48,7 +48,7 @@ async function fetchStockData() {
 
 async function main() {
 
-    const pyFile = await fetch('static/python/compute.py')
+    const pyFile = await fetch('static/python/main.py')
     const script = await pyFile.text();
 
     const session_data = await fetchSessionData();

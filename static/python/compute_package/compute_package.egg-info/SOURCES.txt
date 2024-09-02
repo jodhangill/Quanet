@@ -1,0 +1,11 @@
+setup.py
+compute_package/__init__.py
+compute_package/config_parser.py
+compute_package/neat.py
+compute_package/reporters.py
+compute_package/utils.py
+compute_package.egg-info/PKG-INFO
+compute_package.egg-info/SOURCES.txt
+compute_package.egg-info/dependency_links.txt
+compute_package.egg-info/requires.txt
+compute_package.egg-info/top_level.txt

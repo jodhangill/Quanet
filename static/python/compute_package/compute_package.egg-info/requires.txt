@@ -1,0 +1,5 @@
+neat-python
+backtrader
+pandas
+matplotlib
+graphviz

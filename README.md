@@ -4,6 +4,8 @@
 
 Quanet is a tool for applying the NeuroEvolution of Augmenting Topologies (NEAT) algorithm to quantitative trading, designed for users who want to leverage advanced trading strategies without needing to write code.
 
+![alt text](/static/images/quanet.gif)
+
 ## Features
 
 - **Codeless Interface**: Configure and run NEAT-based trading algorithms without programming.
